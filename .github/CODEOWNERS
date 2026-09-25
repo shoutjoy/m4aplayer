@@ -1,0 +1,6 @@
+# Changes to release and repository-protection files require review by the repository owner.
+/.github/workflows/ @shoutjoy
+/.github/CODEOWNERS @shoutjoy
+/AGENTS.md @shoutjoy
+/.gitignore @shoutjoy
+/src-tauri/tauri.conf.json @shoutjoy

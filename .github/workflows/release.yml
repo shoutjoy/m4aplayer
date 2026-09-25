@@ -1,0 +1,105 @@
+name: Build and Release Windows App
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: windows-release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build-windows:
+    name: Build Windows NSIS installer
+    runs-on: windows-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache Rust build files
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: "src-tauri -> target"
+
+      - name: Validate release tag
+        if: startsWith(github.ref, 'refs/tags/')
+        shell: pwsh
+        run: |
+          $config = Get-Content "src-tauri/tauri.conf.json" -Raw | ConvertFrom-Json
+          $expectedTag = "v$($config.version)"
+          if ("${{ github.ref_name }}" -ne $expectedTag) {
+            throw "Release tag '${{ github.ref_name }}' must match tauri.conf.json version '$expectedTag'."
+          }
+
+      - name: Download FFmpeg and FFprobe
+        shell: pwsh
+        run: |
+          $archive = Join-Path $env:RUNNER_TEMP "ffmpeg-release-essentials.zip"
+          $extractDir = Join-Path $env:RUNNER_TEMP "ffmpeg-release-essentials"
+          $destination = "src-tauri/bin"
+
+          Invoke-WebRequest `
+            -Uri "https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip" `
+            -OutFile $archive
+          Expand-Archive -LiteralPath $archive -DestinationPath $extractDir -Force
+
+          $ffmpeg = Get-ChildItem -LiteralPath $extractDir -Filter "ffmpeg.exe" -Recurse | Select-Object -First 1
+          $ffprobe = Get-ChildItem -LiteralPath $extractDir -Filter "ffprobe.exe" -Recurse | Select-Object -First 1
+          if (-not $ffmpeg -or -not $ffprobe) {
+            throw "FFmpeg archive did not contain ffmpeg.exe and ffprobe.exe."
+          }
+
+          New-Item -ItemType Directory -Path $destination -Force | Out-Null
+          Copy-Item -LiteralPath $ffmpeg.FullName -Destination "$destination/ffmpeg.exe" -Force
+          Copy-Item -LiteralPath $ffprobe.FullName -Destination "$destination/ffprobe.exe" -Force
+          & "$destination/ffmpeg.exe" -version | Select-Object -First 1
+
+      - name: Install Tauri CLI
+        shell: pwsh
+        run: cargo install tauri-cli --version "^2" --locked
+
+      - name: Build Tauri app
+        shell: pwsh
+        run: cargo tauri build
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: JJaIMsae-Player-Windows-NSIS
+          path: src-tauri/target/release/bundle/nsis/*.exe
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Create GitHub Release and upload installer
+        if: startsWith(github.ref, 'refs/tags/')
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $tag = "${{ github.ref_name }}"
+          $releaseExists = $true
+          gh release view $tag 2>$null | Out-Null
+          if ($LASTEXITCODE -ne 0) {
+            $releaseExists = $false
+          }
+          if (-not $releaseExists) {
+            gh release create $tag --title "JJaIMsae Player $tag" --generate-notes
+          }
+
+          $installers = Get-ChildItem "src-tauri/target/release/bundle/nsis/*.exe"
+          if (-not $installers) {
+            throw "No NSIS installer was produced."
+          }
+          foreach ($installer in $installers) {
+            gh release upload $tag $installer.FullName --clobber
+          }

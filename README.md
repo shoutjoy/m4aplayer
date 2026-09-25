@@ -63,6 +63,19 @@ Tauri bundle resources 설정에 의해 두 실행파일이 설치 패키지에 
 
 주의: 이 ZIP에는 FFmpeg 제3자 실행파일 자체는 포함하지 않는다. 사용하려는 FFmpeg 빌드의 라이선스(LGPL/GPL 및 포함 코덱)를 확인한 뒤 위 폴더에 배치한다.
 
+## GitHub Actions 자동 빌드 및 다운로드
+
+저장소의 `Actions` 탭에서 `Build and Release Windows App` 워크플로우를 수동 실행하면 Windows NSIS 설치 프로그램이 빌드된다. 완료 후 해당 실행 화면의 `Artifacts`에서 `JJaIMsae-Player-Windows-NSIS`를 다운로드할 수 있으며, 이 임시 파일은 30일 동안 보관된다.
+
+정식 배포는 `src-tauri/tauri.conf.json`의 버전과 같은 Git 태그를 사용한다. 예를 들어 버전이 `2.0.1`이면 다음과 같이 실행한다.
+
+```bash
+git tag v2.0.1
+git push origin v2.0.1
+```
+
+태그가 푸시되면 GitHub Release가 자동으로 생성되고 NSIS 설치 파일이 Release 자산으로 업로드된다. FFmpeg와 FFprobe는 저장소에 포함하지 않으며, 워크플로우가 빌드할 때 Gyan.dev의 Windows essentials 배포본을 내려받아 설치 프로그램에 포함한다.
+
 ## cargo를 설치하는 방법 
 
 Tauri 애플리케이션 빌드(`cargo tauri build`)를 수행하기 위해서는 사전에 Rust 프로그래밍 언어와 패키지 관리자인 Cargo를 설치해야 한다. 다음의 단계별 절차를 통해 시스템에 환경을 구축할 수 있다.
@@ -103,4 +116,3 @@ Cargo와 Rust가 정상적으로 설치되었는지 확인하기 위해 버전 �
    ```
 
 위 두 명령어에서 버전 정보가 정상적으로 출력되었다면, `cargo tauri build`를 수행하기 위한 기본적인 백엔드 환경이 성공적으로 구축된 것으로 평가할 수 있다. 이후 Tauri CLI 설치 및 시스템별 추가 종속성 설치 단계로 이어질 수 있다.
-
