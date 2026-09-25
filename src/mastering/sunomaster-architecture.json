@@ -1,0 +1,272 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "SunoMaster 앱 구조",
+    "quality_profile": "showcase",
+    "viewBox": [1420, 720],
+    "repository": {
+      "url": "https://github.com/shoutjoy/sunoMaster",
+      "provider": "github",
+      "revision": "6cd1d2c9ccd77c3c2b57f1cb7abeedb80290bfc6"
+    },
+    "views": [
+      {
+        "id": "audio-path",
+        "label": "오디오 처리 경로",
+        "focus": ["browser-ui", "upload-controller", "app-controller", "audio-graph", "effect-chain", "monitoring-output"],
+        "note": "파일 입력부터 실시간 재생·분석까지의 핵심 경로입니다."
+      },
+      {
+        "id": "analysis-path",
+        "label": "업로드 분석",
+        "focus": ["upload-controller", "analysis-worker", "app-controller"],
+        "note": "Web Worker가 파형과 오디오 특성을 비동기로 계산합니다."
+      },
+      {
+        "id": "export-persistence",
+        "label": "저장·내보내기",
+        "focus": ["app-controller", "local-storage", "audio-graph", "wav-export", "jjaimsae-handoff"],
+        "note": "프로젝트 저장, 오프라인 렌더링, 외부 전달 경로를 묶어 보여줍니다."
+      }
+    ]
+  },
+  "layout": {
+    "mode": "grid",
+    "origin": [55, 95],
+    "cols": 6,
+    "gapX": 66,
+    "gapY": 96,
+    "cellW": 170,
+    "cellH": 76
+  },
+  "components": [
+    {
+      "id": "browser-ui",
+      "type": "frontend",
+      "label": "브라우저 UI",
+      "sublabel": "index.html + index.css",
+      "sources": [
+        { "path": "index.html", "line": 1194, "end_line": 1202, "label": "런타임 스크립트 구성" }
+      ],
+      "row": 1,
+      "col": 0
+    },
+    {
+      "id": "upload-controller",
+      "type": "frontend",
+      "label": "오디오 업로드",
+      "sublabel": "드롭·디코딩·타임라인",
+      "sources": [
+        { "path": "UploadeFiles/audio-upload.js", "line": 95, "end_line": 224, "label": "업로드와 디코딩" },
+        { "path": "index.js", "line": 2857, "end_line": 3363, "label": "타임라인 처리" }
+      ],
+      "row": 1,
+      "col": 1
+    },
+    {
+      "id": "analysis-worker",
+      "type": "backend",
+      "label": "분석 Worker",
+      "sublabel": "파형·레벨 비동기 분석",
+      "sources": [
+        { "path": "UploadeFiles/audio-analysis.worker.js", "line": 1, "end_line": 84, "label": "비동기 분석" }
+      ],
+      "row": 0,
+      "col": 1
+    },
+    {
+      "id": "app-controller",
+      "type": "backend",
+      "label": "앱 컨트롤러",
+      "sublabel": "index.js + audioState",
+      "sources": [
+        { "path": "index.js", "line": 359, "end_line": 434, "label": "공유 상태와 이펙터" }
+      ],
+      "row": 1,
+      "col": 2
+    },
+    {
+      "id": "audio-graph",
+      "type": "backend",
+      "label": "Web Audio 그래프",
+      "sublabel": "실시간 / 오프라인",
+      "sources": [
+        { "path": "index.js", "line": 2337, "end_line": 2447, "label": "그래프 컴파일" },
+        { "path": "index.js", "line": 3517, "end_line": 3562, "label": "실시간 그래프" }
+      ],
+      "row": 1,
+      "col": 3
+    },
+    {
+      "id": "effect-chain",
+      "type": "backend",
+      "label": "마스터링 체인",
+      "sublabel": "6단계 DSP 처리",
+      "sources": [
+        { "path": "index.js", "line": 2337, "end_line": 2343, "label": "체인 조립" },
+        { "path": "effector/EQ/eq.js", "line": 1, "label": "EQ 모듈" },
+        { "path": "effector/limitor/limiter.js", "line": 1, "end_line": 155, "label": "Limiter 모듈" }
+      ],
+      "row": 1,
+      "col": 4
+    },
+    {
+      "id": "monitoring-output",
+      "type": "frontend",
+      "label": "재생·모니터링",
+      "sublabel": "파형·스펙트럼·LUFS",
+      "sources": [
+        { "path": "index.js", "line": 1874, "end_line": 2035, "label": "파형과 진행률" },
+        { "path": "index.js", "line": 3822, "end_line": 4045, "label": "스펙트럼 분석" }
+      ],
+      "row": 1,
+      "col": 5
+    },
+    {
+      "id": "local-storage",
+      "type": "database",
+      "label": "브라우저 저장소",
+      "sublabel": "IndexedDB + localStorage",
+      "sources": [
+        { "path": "index.js", "line": 4100, "end_line": 4170, "label": "프로젝트 IndexedDB" },
+        { "path": "index.js", "line": 19, "end_line": 30, "label": "UI localStorage" }
+      ],
+      "row": 2,
+      "col": 2
+    },
+    {
+      "id": "wav-export",
+      "type": "backend",
+      "label": "WAV 내보내기",
+      "sublabel": "오프라인 렌더링 + Blob",
+      "sources": [
+        { "path": "index.js", "line": 3686, "end_line": 3812, "label": "WAV 렌더링과 저장" }
+      ],
+      "row": 2,
+      "col": 4
+    },
+    {
+      "id": "jjaimsae-handoff",
+      "type": "external",
+      "label": "JJaIMsae 전달",
+      "sublabel": "postMessage 브리지",
+      "sources": [
+        { "path": "UploadeFiles/jjim-handoff.js", "line": 294, "end_line": 391, "label": "브리지와 창 전달" },
+        { "path": "UploadeFiles/jjim-handoff.js", "line": 595, "end_line": 605, "label": "수신 이벤트" }
+      ],
+      "row": 2,
+      "col": 5
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "브라우저 런타임",
+      "wraps": ["browser-ui", "upload-controller", "analysis-worker", "app-controller", "audio-graph", "effect-chain", "monitoring-output", "local-storage", "wav-export"]
+    }
+  ],
+  "connections": [
+    {
+      "id": "ui-to-upload",
+      "from": "browser-ui",
+      "to": "upload-controller",
+      "label": "파일 선택·드롭",
+      "variant": "emphasis"
+    },
+    {
+      "id": "upload-to-worker",
+      "from": "upload-controller",
+      "to": "analysis-worker",
+      "label": "PCM 분석 요청"
+    },
+    {
+      "id": "worker-to-controller",
+      "from": "analysis-worker",
+      "to": "app-controller",
+      "label": "분석 결과"
+    },
+    {
+      "id": "upload-to-controller",
+      "from": "upload-controller",
+      "to": "app-controller",
+      "label": "AudioBuffer·타임라인",
+      "labelAt": [469, 341],
+      "variant": "emphasis"
+    },
+    {
+      "id": "controller-to-graph",
+      "from": "app-controller",
+      "to": "audio-graph",
+      "label": "상태·소스 노드",
+      "variant": "emphasis"
+    },
+    {
+      "id": "graph-to-effects",
+      "from": "audio-graph",
+      "to": "effect-chain",
+      "label": "오디오 신호",
+      "variant": "emphasis"
+    },
+    {
+      "id": "effects-to-monitoring",
+      "from": "effect-chain",
+      "to": "monitoring-output",
+      "label": "재생·측정",
+      "variant": "emphasis"
+    },
+    {
+      "id": "controller-to-storage",
+      "from": "app-controller",
+      "to": "local-storage",
+      "label": "프로젝트·설정 저장",
+      "labelAt": [587, 341]
+    },
+    {
+      "id": "graph-to-export",
+      "from": "audio-graph",
+      "to": "wav-export",
+      "label": "오프라인 렌더 결과"
+    },
+    {
+      "id": "effects-to-export",
+      "from": "effect-chain",
+      "to": "wav-export",
+      "label": "동일 설정 적용",
+      "labelAt": [1059, 341]
+    },
+    {
+      "id": "export-to-handoff",
+      "from": "wav-export",
+      "to": "jjaimsae-handoff",
+      "label": "WAV·메타데이터",
+      "variant": "dashed"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "핵심 실행 모델",
+      "items": [
+        "서버 없이 브라우저에서 오디오를 디코딩하고 처리합니다.",
+        "실시간 재생과 오프라인 WAV 렌더링이 같은 효과 설정을 공유합니다."
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "로컬 데이터",
+      "items": [
+        "IndexedDB에 프로젝트와 오디오를 저장합니다.",
+        "localStorage에 UI와 분석기 설정을 보존합니다."
+      ]
+    },
+    {
+      "dot": "violet",
+      "title": "외부 연동",
+      "items": [
+        "JJaIMsae 전송은 postMessage와 브라우저 확장 브리지를 사용합니다.",
+        "업로드 분석은 Web Worker로 메인 UI와 분리됩니다."
+      ]
+    }
+  ]
+}

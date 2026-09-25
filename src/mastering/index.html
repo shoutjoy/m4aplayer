@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <link rel="icon" href="data:,">
+    <title> JAiMse(JJaIMsae) JENA AI Engin Mastering Tool V2.1</title>
+    <script>if(!window.__TAURI__&&window.parent!==window){try{window.__TAURI__=window.parent.__TAURI__}catch(error){console.warn('Tauri bridge inheritance failed',error)}}</script>
+    <script async src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="index.css?v=20260922-2">
+    <link rel="stylesheet" href="UploadeFiles/audio-upload.css?v=20260628-14">
+</head>
+
+<body class="text-gray-200 min-h-screen p-3 md:p-6 font-sans select-none">
+
+    <div class="max-w-7xl mx-auto space-y-4">
+
+        <header
+            class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-[#090d16] p-5 rounded-2xl border border-gray-800 shadow-2xl gap-4">
+            <div>
+                <h1 class="text-xl font-bold text-white flex items-center gap-3">
+                    <i class="fa-solid fa-layer-group text-blue-500 animate-pulse"></i>
+                    JAiMse(JJaIMsae) JENA AI Engin Mastering Tools<span
+                        class="text-xs bg-indigo-600 px-2 py-0.5 rounded text-white font-normal">Jena Engine V2.3 </span>
+                </h1>
+                <p class="text-xs text-gray-400 mt-1">Professional mastering tools for creators max4up</p>
+            </div>
+            <div class="relative w-full sm:w-auto space-y-2">
+                <div class="flex flex-wrap gap-2 w-full sm:w-auto">
+                    <button id="collapse-all-btn" type="button"
+                        class="global-fold-btn global-icon-btn bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl text-xs font-semibold transition flex items-center justify-center"
+                        title="모든 패널 접기" aria-label="모든 패널 접기">
+                        <i class="fa-solid fa-angles-up"></i>
+                    </button>
+                    <button id="expand-all-btn" type="button"
+                        class="global-fold-btn global-icon-btn bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl text-xs font-semibold transition flex items-center justify-center"
+                        title="모든 패널 펼치기" aria-label="모든 패널 펼치기">
+                        <i class="fa-solid fa-angles-down"></i>
+                    </button>
+                    <button id="theme-toggle" type="button" aria-pressed="false"
+                        class="global-icon-btn bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl text-xs font-semibold transition flex items-center justify-center"
+                        title="라이트 모드로 전환" aria-label="라이트 모드로 전환">
+                        <i id="theme-icon" class="fa-solid fa-sun"></i>
+                    </button>
+                    <button id="reset-all-btn" type="button"
+                        class="global-icon-btn bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl text-xs font-semibold transition flex items-center justify-center"
+                        title="콘솔 초기화" aria-label="콘솔 초기화">
+                        <i class="fa-solid fa-rotate-left"></i>
+                    </button>
+                    <button id="clear-all-files-btn" type="button"
+                        class="global-clear-files-btn bg-red-950/40 hover:bg-red-900/60 text-red-200 rounded-xl text-xs font-semibold transition flex items-center justify-center gap-2 border border-red-500/40"
+                        title="현재 음원·커버·가사와 Suno 복원 캐시를 모두 지우고 새로 시작" aria-label="전체 파일 초기화">
+                        <i class="fa-solid fa-trash-can"></i>
+                        <span>전체 파일 초기화</span>
+                    </button>
+                    <button id="close-mastering-btn" type="button"
+                        class="global-icon-btn bg-gray-800 hover:bg-red-900 text-gray-300 rounded-xl text-xs font-semibold transition flex items-center justify-center"
+                        title="마스터링 창 닫기" aria-label="마스터링 창 닫기">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                    <button id="audio-download-btn" type="button" disabled
+                        class="global-icon-btn bg-blue-600 hover:bg-blue-500 text-white font-semibold text-center text-xs rounded-xl transition flex items-center justify-center shadow-lg disabled:opacity-40 disabled:cursor-not-allowed"
+                        title="음원 다운로드" aria-label="음원 다운로드">
+                        <i class="fa-solid fa-download"></i>
+                    </button>
+                    <button id="download-btn"
+                        class="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs px-5 py-2.5 rounded-xl transition flex items-center justify-center gap-2 shadow-[0_0_22px_rgba(16,185,129,0.55)] hover:shadow-[0_0_30px_rgba(52,211,153,0.72)] disabled:opacity-55 disabled:cursor-not-allowed"
+                        disabled>
+                        <i class="fa-solid fa-download"></i> Mastering Data Execute
+                    </button>
+                    <button id="player-settings-btn" type="button" aria-expanded="false" aria-controls="player-settings-menu"
+                        class="ml-auto bg-gray-800 hover:bg-gray-700 text-gray-300 w-10 h-10 rounded-xl transition flex items-center justify-center border border-gray-700"
+                        title="플레이어 및 내보내기 설정" aria-label="플레이어 및 내보내기 설정">
+                        <i class="fa-solid fa-gear"></i>
+                    </button>
+                </div>
+                <div id="player-settings-menu" class="player-settings-menu hidden" role="dialog" aria-label="플레이어 및 내보내기 설정">
+                    <div class="player-settings-title"><i class="fa-solid fa-sliders"></i> 플레이바 위치</div>
+                    <label>
+                        <input id="player-mode-inner" type="radio" name="player-mode" value="inner" checked>
+                        <span><b>Inner</b><small>웨이브폼 안에 고정 · Alt+2</small></span>
+                    </label>
+                    <label>
+                        <input id="player-mode-float" type="radio" name="player-mode" value="float">
+                        <span><b>Float</b><small>화면 하단에 전역 고정 · Alt+1</small></span>
+                    </label>
+                    <div class="player-settings-divider"></div>
+                    <div class="player-settings-title"><i class="fa-solid fa-eye"></i> 화면 표시</div>
+                    <label>
+                        <input id="setting-show-stem-console" type="checkbox">
+                        <span><b>AI 20-Channel 분리</b><small>필요할 때만 콘솔 표시 · 기본 숨김</small></span>
+                    </label>
+                    <label>
+                        <input id="setting-show-ai-presets" type="checkbox">
+                        <span><b>AI 100 Micro Presets</b><small>고급 미세 프리셋 라이브러리 표시 · 기본 숨김</small></span>
+                    </label>
+                    <label>
+                        <input id="setting-show-jjim-mastered-targets" type="checkbox">
+                        <span><b>JJaIMsae 마스터 전송</b><small>마스터 곡·싱글앨범 전송 버튼 표시 · 기본 숨김</small></span>
+                    </label>
+                    <div class="spectrum-band-setting">
+                        <label for="ai-micro-preset-scale"><b>AI 100 값 배율</b><small>0.1–2.0 · 기본 0.3</small></label>
+                        <input id="ai-micro-preset-scale" type="number" min="0.1" max="2" step="0.05" value="0.3" inputmode="decimal">
+                    </div>
+                    <div class="spectrum-band-setting">
+                        <label for="spectrum-band-count"><b>FFT 주파수 밴드</b><small>8–64개 · 기본 64개</small></label>
+                        <input id="spectrum-band-count" type="number" min="8" max="64" step="1" value="64" inputmode="numeric">
+                    </div>
+                    <div class="player-settings-divider"></div>
+                    <div class="player-settings-title"><i class="fa-solid fa-file-waveform"></i> WAV 내보내기 파일명</div>
+                    <div class="export-prefix-setting">
+                        <label for="export-prefix-input"><b>Prefix</b><small>원본 파일명 앞에 붙일 텍스트</small></label>
+                        <input id="export-prefix-input" type="text" value="mastered_" maxlength="40" spellcheck="false" autocomplete="off" aria-describedby="export-filename-preview">
+                        <small id="export-filename-preview" class="export-filename-preview">mastered_audio.wav</small>
+                    </div>
+                </div>
+                <div id="export-progress-panel"
+                    class="hidden w-full sm:max-w-md rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-2 shadow-lg shadow-emerald-500/10">
+                    <div class="flex items-center justify-between gap-3">
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center justify-between gap-2 text-[10px] font-mono text-emerald-300">
+                                <span id="export-status-text" class="truncate">WAV 내보내기 준비 중</span>
+                                <span id="export-progress-text" class="shrink-0 text-white">0%</span>
+                            </div>
+                            <div class="mt-1 h-2 overflow-hidden rounded-full bg-emerald-950/60">
+                                <div id="export-progress-fill"
+                                    class="h-full w-0 rounded-full bg-emerald-400 transition-all duration-150"></div>
+                            </div>
+                        </div>
+                        <button id="export-cancel-btn" type="button"
+                            class="shrink-0 bg-red-600 hover:bg-red-500 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg transition">
+                            중지
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+
+            <div class="sidebar-workbench-column lg:col-span-4 space-y-5">
+
+                <!-- AUDIO UPLOAD & BACKGROUND ANALYSIS -->
+                <section id="audio-upload-panel" class="audio-upload-panel" aria-labelledby="audio-upload-title">
+                    <input type="file" id="audio-upload" class="audio-file-input" accept="audio/*,.wav,.mp3,.flac,.m4a,.aac,.ogg,.opus,.aif,.aiff" multiple aria-label="음원 파일 선택">
+                    <button id="audio-drop-zone" class="audio-drop-zone" type="button">
+                        <span class="audio-drop-icon"><i class="fa-solid fa-cloud-arrow-up"></i></span>
+                        <span class="min-w-0 text-left">
+                            <strong id="audio-upload-title">음원을 여기에 드래그 앤 드롭</strong>
+                            <small>또는 클릭하여 파일 선택 · WAV, MP3, FLAC 등</small>
+                        </span>
+                        <span class="audio-drop-action">파일 선택</span>
+                    </button>
+
+                    <div id="audio-analysis-summary" class="audio-analysis-summary hidden">
+                        <button id="audio-analysis-toggle" type="button" class="audio-analysis-toggle"
+                            aria-expanded="false" aria-controls="audio-analysis-content">
+                            <span class="min-w-0 flex items-center gap-2">
+                                <i class="fa-solid fa-wave-square text-blue-400"></i>
+                                <span id="audio-analysis-file" class="truncate">분석 리포트</span>
+                            </span>
+                            <span class="flex items-center gap-2 shrink-0">
+                                <span id="audio-analysis-status" class="audio-analysis-status">대기</span>
+                                <i id="audio-analysis-chevron" class="fa-solid fa-chevron-down text-gray-500"></i>
+                            </span>
+                        </button>
+                        <div id="audio-analysis-content" class="audio-analysis-content hidden">
+                            <div id="audio-analysis-metrics" class="audio-analysis-metrics"></div>
+                            <div class="audio-analysis-advice">
+                                <h4><i class="fa-solid fa-wand-magic-sparkles"></i> 마스터링 체크</h4>
+                                <ul id="audio-analysis-advice"></ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="audio-upload-choice" class="audio-upload-choice hidden" role="dialog" aria-modal="true"
+                        aria-labelledby="audio-upload-choice-title">
+                        <div class="audio-upload-choice-card">
+                            <p id="audio-upload-choice-title" class="audio-upload-choice-title">
+                                새 음원 처리 방식 선택
+                            </p>
+                            <p id="audio-upload-choice-file" class="audio-upload-choice-file">새 파일</p>
+                            <div class="audio-upload-choice-actions">
+                                <button id="audio-upload-replace" type="button" class="audio-choice-btn is-replace">
+                                    <i class="fa-solid fa-rotate"></i> 현재 음원 교체
+                                </button>
+                                <button id="audio-upload-append" type="button" class="audio-choice-btn is-append">
+                                    <i class="fa-solid fa-timeline"></i> 오디오 타임라인에 추가
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </section>
+
+                <!-- PROJECT MANAGEMENT DASHBOARD -->
+                <div id="project-manager-panel" class="bg-[#090d16] p-4 rounded-2xl border border-gray-800 space-y-3 shadow-xl">
+                    <div id="project-header"
+                        class="flex items-center justify-between border-b border-gray-800 pb-2 cursor-pointer select-none">
+                        <h3 class="text-xs font-bold text-gray-300 uppercase tracking-wider flex items-center gap-1.5">
+                            <i class="fa-solid fa-folder-open text-blue-500 animate-pulse"></i>
+                            프로젝트 매니저
+                        </h3>
+                        <button id="project-collapse-btn" type="button"
+                            class="text-gray-400 hover:text-white transition text-xs p-1" title="Toggle Collapse">
+                            <i id="project-collapse-icon" class="fa-solid fa-chevron-down"></i>
+                        </button>
+                    </div>
+                    <div id="project-collapse-content" class="space-y-3 transition-all duration-300 hidden">
+                        <div class="grid grid-cols-2 gap-2">
+                            <button id="project-save-db"
+                                class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs px-3 py-2 rounded-xl transition flex items-center justify-center gap-1.5 shadow-md shadow-indigo-500/10 hover:shadow-indigo-500/20">
+                                <i class="fa-solid fa-floppy-disk"></i> DB 저장
+                            </button>
+                            <div class="relative w-full">
+                                <select id="project-load-db"
+                                    class="w-full bg-[#03050a] border border-gray-800 rounded-xl px-2 py-2 text-[11px] text-gray-300 outline-none hover:border-gray-750 focus:border-indigo-500 transition cursor-pointer">
+                                    <option value="">DB 불러오기...</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button id="project-export-jjd"
+                                class="bg-gray-800/80 hover:bg-gray-700/95 hover:text-white border border-gray-800/50 text-gray-300 font-semibold text-xs px-3 py-2 rounded-xl transition flex items-center justify-center gap-1.5">
+                                <i class="fa-solid fa-file-export text-amber-500"></i> 내보내기 (.jjd)
+                            </button>
+                            <label
+                                class="cursor-pointer bg-gray-800/80 hover:bg-gray-700/95 hover:text-white border border-gray-800/50 text-gray-300 font-semibold text-center text-xs px-3 py-2 rounded-xl transition flex items-center justify-center gap-1.5">
+                                <i class="fa-solid fa-file-import text-teal-400"></i> 불러오기 (.jjd)
+                                <input type="file" id="project-import-jjd" accept=".jjd" class="hidden">
+                            </label>
+                        </div>
+
+                        <!-- Auto-Save Settings -->
+                        <div
+                            class="flex items-center justify-between bg-[#03050a] p-2 rounded-xl border border-gray-850 text-xs">
+                            <div class="flex items-center gap-1.5 font-medium text-gray-400">
+                                <i id="autosave-icon" class="fa-solid fa-clock text-gray-500"></i>
+                                <span>자동 저장</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <div class="flex items-center gap-1 font-mono text-[11px] text-gray-500">
+                                    <input type="number" id="autosave-interval" value="5" min="1" max="120"
+                                        class="w-10 bg-gray-950 border border-gray-800 rounded text-center text-gray-300 outline-none focus:border-indigo-500 py-0.5">
+                                    <span>분</span>
+                                </div>
+                                <button id="autosave-toggle" type="button" aria-pressed="false"
+                                    class="bg-gray-800 text-gray-400 text-[10px] font-bold px-2 py-0.5 rounded-md border border-gray-700 transition">OFF</button>
+                            </div>
+                        </div>
+                        
+                        <!-- 업로드 활성화 설정 -->
+                        <div class="bg-[#03050a] p-2.5 rounded-xl border border-gray-850 space-y-2 text-xs">
+                            <div class="font-bold text-gray-300 pb-1 border-b border-gray-800/60 flex items-center gap-1.5">
+                                <i class="fa-solid fa-gear text-blue-500"></i>
+                                <span>음원 업로드 시 활성화 설정</span>
+                            </div>
+                            <div class="space-y-1.5 pl-1">
+                                <label class="flex items-center gap-2 cursor-pointer text-gray-400 hover:text-gray-250 select-none">
+                                    <input type="checkbox" id="cfg-seek-bar" checked
+                                        class="rounded bg-gray-950 border-gray-800 text-indigo-600 focus:ring-indigo-500 focus:ring-offset-gray-900 h-3.5 w-3.5 cursor-pointer">
+                                    <span>구간 이동 게이지 활성화</span>
+                                </label>
+                                <label class="flex items-center gap-2 cursor-pointer text-gray-400 hover:text-gray-250 select-none">
+                                    <input type="checkbox" id="cfg-tube-exciter"
+                                        class="rounded bg-gray-950 border-gray-800 text-indigo-600 focus:ring-indigo-500 focus:ring-offset-gray-900 h-3.5 w-3.5 cursor-pointer">
+                                    <span>4배 오버샘플링 진공관 활성화 기본값</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="spectrum-analyzer-panel"
+                    class="spectrum-analyzer-panel bg-[#090d16] p-4 rounded-2xl border border-gray-800 relative overflow-hidden flex flex-col shadow-xl">
+                    <div class="flex justify-between items-center z-10">
+                        <span
+                            class="text-[10px] bg-blue-500/10 border border-blue-500/20 text-blue-400 px-2 py-0.5 rounded font-mono font-bold tracking-wider">REAL-TIME
+                            FFT OCTAVE ANALYSER</span>
+                        <div class="flex items-center gap-1.5">
+                            <div class="spectrum-view-switch" role="group" aria-label="FFT 표시 방식">
+                                <button id="spectrum-bars-btn" type="button" class="spectrum-view-btn is-active" aria-pressed="true">BAR</button>
+                                <button id="spectrum-wave-btn" type="button" class="spectrum-view-btn" aria-pressed="false">WAVE</button>
+                                <button id="spectrum-combo-btn" type="button" class="spectrum-view-btn" aria-pressed="false">BAR+WAVE</button>
+                            </div>
+                            <span class="text-[9px] font-mono text-gray-400">CLIP</span>
+                            <div id="clip-led"
+                                class="w-2.5 h-2.5 bg-gray-900 rounded-full border border-gray-900 transition-all duration-75">
+                            </div>
+                        </div>
+                    </div>
+
+                    <canvas id="visualizer" class="spectrum-analyzer-canvas w-full mt-2 z-10"></canvas>
+
+                    <div id="track-name" class="current-track-title">
+                        Waiting for audio source signal...</div>
+                    <button id="spectrum-height-resizer" type="button" class="spectrum-height-resizer" aria-label="FFT 분석기 높이 조절" title="위아래로 드래그하여 분석기 높이 조절"><i class="fa-solid fa-grip-lines"></i></button>
+                </div>
+
+                <section id="master-loudness-panel" class="loudness-panel">
+                    <div class="loudness-panel-header">
+                        <h3><i class="fa-solid fa-chart-column"></i> MASTER LOUDNESS METER</h3>
+                        <button id="loudness-collapse-btn" type="button" aria-expanded="true" aria-controls="loudness-panel-content" title="접기/펼치기"><i class="fa-solid fa-chevron-up"></i></button>
+                    </div>
+                    <div id="loudness-panel-content" class="loudness-panel-content">
+                        <div class="loudness-primary-grid">
+                            <div class="loudness-metric-row"><span>Momentary<small>400ms</small></span><strong id="loudness-momentary">--</strong><em>LUFS</em><div class="loudness-level-meter meter-momentary has-target" role="progressbar" aria-label="Momentary loudness level" aria-valuemin="-60" aria-valuemax="0"><div id="loudness-momentary-bar" class="loudness-level-fill"></div></div></div>
+                            <div class="loudness-metric-row"><span>Short-term<small>3.0s</small></span><strong id="loudness-short">--</strong><em>LUFS</em><div class="loudness-level-meter meter-short has-target" role="progressbar" aria-label="Short-term loudness level" aria-valuemin="-60" aria-valuemax="0"><div id="loudness-short-bar" class="loudness-level-fill"></div></div></div>
+                            <div class="loudness-metric-row"><span>Integrated<small>전체</small></span><strong id="loudness-integrated">--</strong><em>LUFS</em><div class="loudness-level-meter meter-integrated has-target" role="progressbar" aria-label="Integrated loudness level" aria-valuemin="-60" aria-valuemax="0"><div id="loudness-integrated-bar" class="loudness-level-fill"></div></div></div>
+                            <div class="loudness-metric-row"><span>Loudness Range<small>Approx</small></span><strong id="loudness-lra">--</strong><em>LU</em><div class="loudness-level-meter meter-lra" role="progressbar" aria-label="Loudness range level" aria-valuemin="0" aria-valuemax="20"><div id="loudness-lra-bar" class="loudness-level-fill"></div></div></div>
+                            <div class="loudness-metric-row"><span>True Peak<small>Approx</small></span><strong id="loudness-peak">--</strong><em>dBTP</em><div class="loudness-level-meter meter-peak has-peak-limit" role="progressbar" aria-label="True peak level" aria-valuemin="-60" aria-valuemax="3"><div id="loudness-peak-bar" class="loudness-level-fill"></div></div></div>
+                            <div class="loudness-time"><span>Time</span><strong id="loudness-time">00:00</strong></div>
+                        </div>
+                        <div class="loudness-history-card">
+                            <div class="loudness-subhead"><span>LOUDNESS HISTORY</span><small>최근 120초</small></div>
+                            <canvas id="loudness-history" height="150"></canvas>
+                            <div class="loudness-legend"><span class="momentary">Momentary</span><span class="short">Short-term</span><span class="integrated">Integrated</span></div>
+                            <button id="loudness-history-resizer" type="button" class="loudness-history-resizer" aria-label="Loudness History 높이 조절" title="위아래로 드래그하여 그래프 높이 조절"><i class="fa-solid fa-grip-lines"></i></button>
+                        </div>
+                        <div class="loudness-targets">
+                            <div class="loudness-subhead"><span>STREAMING TARGETS</span><small>Normalization</small></div>
+                            <div class="streaming-limiter-sync" id="streaming-limiter-sync">
+                                <span><i class="fa-solid fa-link"></i> LIMITER OUTPUT</span>
+                                <strong id="streaming-limiter-output">0.0 dB</strong>
+                                <em id="streaming-limiter-status">OUT</em>
+                                <button type="button" id="streaming-limiter-fit" disabled>AUTO FIT</button>
+                            </div>
+                            <div class="target-row" data-target-lufs="-14"><span>Spotify</span><b>-14 LUFS</b><em>--</em><i>WAIT</i><button type="button" class="target-fit-btn" disabled>FIT</button></div>
+                            <div class="target-row" data-target-lufs="-14"><span>YouTube</span><b>-14 LUFS</b><em>--</em><i>WAIT</i><button type="button" class="target-fit-btn" disabled>FIT</button></div>
+                            <div class="target-row" data-target-lufs="-16"><span>Apple Music</span><b>-16 LUFS</b><em>--</em><i>WAIT</i><button type="button" class="target-fit-btn" disabled>FIT</button></div>
+                            <div class="target-row" data-target-lufs="-14"><span>Amazon Music</span><b>-14 LUFS</b><em>--</em><i>WAIT</i><button type="button" class="target-fit-btn" disabled>FIT</button></div>
+                        </div>
+                        <div class="loudness-footer"><span>BS.1770-style estimate · True Peak/LRA Approx</span><button id="loudness-reset-btn" type="button"><i class="fa-solid fa-rotate"></i> RESET</button></div>
+                    </div>
+                </section>
+
+                <div class="bg-[#090d16] p-4 rounded-2xl border border-gray-800 space-y-3 shadow-xl">
+                    <div id="signal-output-panel" class="bg-[#03050a] p-2.5 rounded-xl border border-gray-800 space-y-1">
+                        <div class="flex justify-between text-[10px] font-mono text-gray-400"><span>SIGNAL OUTPUT LEVEL
+                                (LUFS/RMS)</span><span id="lufs-text">-inf dB</span></div>
+                        <div
+                            class="w-full h-2 bg-gray-900 rounded-full overflow-hidden relative border border-gray-950">
+                            <div id="lufs-bar"
+                                class="h-full w-0 bg-gradient-to-r from-emerald-500 via-amber-400 to-rose-500 transition-all duration-75">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="master-reverb-panel" class="bg-[#03050a] p-2.5 rounded-xl border border-gray-800 space-y-2">
+                        <div class="flex justify-between items-center text-xs font-bold">
+                            <span class="text-violet-400 text-[11px]"><i class="fa-solid fa-wave-square mr-1"></i>
+                                MASTER REVERB</span>
+                            <button id="reverb-toggle" type="button" aria-pressed="false"
+                                class="bg-gray-800 text-gray-400 text-[10px] font-bold px-2 py-0.5 rounded-md border border-gray-700 transition">OUT</button>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-2">
+                            <select id="reverb-preset"
+                                class="bg-gray-900 border border-gray-800 rounded-lg px-2 py-1.5 text-[11px] text-gray-300 outline-none">
+                                <option value="">Reverb Preset</option>
+                            </select>
+                            <div class="flex gap-1">
+                                <input id="reverb-template-name" type="text" placeholder="Name"
+                                    class="min-w-0 w-full sm:w-24 bg-gray-900 border border-gray-800 rounded-lg px-2 py-1.5 text-[11px] text-gray-300 outline-none">
+                                <button id="reverb-template-save" type="button"
+                                    class="bg-violet-600 hover:bg-violet-500 text-white text-[10px] font-bold px-2.5 py-1.5 rounded-lg transition">SAVE</button>
+                            </div>
+                        </div>
+                        <div class="reverb-visual-grid">
+                            <div id="reverb-envelope-shell" class="effect-graph-shell reverb-visual-panel">
+                                <div class="effect-graph-head"><span>REVERB ENVELOPE</span><small>핸들을 드래그해 조절</small></div>
+                                <canvas id="reverb-envelope-canvas" aria-label="리버브 엔벨로프 조절 그래프"></canvas>
+                                <div class="reverb-visual-footer"><span>ER</span><span>TAIL</span></div>
+                                <button type="button" class="effect-graph-resizer" data-resize-target="reverb-envelope-shell" data-resize-key="jd-reverb-graph-height" aria-label="리버브 그래프 높이 조절"><i class="fa-solid fa-grip-lines"></i></button>
+                            </div>
+                            <div id="reverb-eq-shell" class="effect-graph-shell reverb-eq-panel">
+                                <div class="effect-graph-head"><span>REVERB EQ</span><small>Low / High 드래그</small></div>
+                                <canvas id="reverb-eq-canvas" aria-label="리버브 EQ 조절 그래프"></canvas>
+                                <button type="button" class="effect-graph-resizer" data-resize-target="reverb-eq-shell" data-resize-key="jd-reverb-eq-graph-height" aria-label="리버브 EQ 그래프 높이 조절"><i class="fa-solid fa-grip-lines"></i></button>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div class="space-y-1">
+                                <div class="flex justify-between text-[10px] font-bold">
+                                    <span class="text-violet-400">PRE DELAY</span><span id="reverb-predelay-val"
+                                        class="text-violet-400 font-mono">20 ms</span>
+                                </div>
+                                <input type="range" id="reverb-predelay" min="0" max="150" value="20" step="1"
+                                    class="reverb-slider w-full h-1.5 rounded appearance-none accent-violet-500">
+                            </div>
+                            <div class="space-y-1">
+                                <div class="flex justify-between text-[10px] font-bold">
+                                    <span class="text-violet-400">DECAY</span><span id="reverb-decay-val"
+                                        class="text-violet-400 font-mono">1.2 s</span>
+                                </div>
+                                <input type="range" id="reverb-decay" min="0.3" max="12" value="1.2" step="0.1"
+                                    class="reverb-slider w-full h-1.5 rounded appearance-none accent-violet-500">
+                            </div>
+                            <div class="space-y-1">
+                                <div class="flex justify-between text-[10px] font-bold">
+                                    <span class="text-violet-400">DIFFUSION</span><span id="reverb-diffusion-val"
+                                        class="text-violet-400 font-mono">70 %</span>
+                                </div>
+                                <input type="range" id="reverb-diffusion" min="0" max="100" value="70" step="1"
+                                    class="reverb-slider w-full h-1.5 rounded appearance-none accent-violet-500">
+                            </div>
+                            <div class="space-y-1">
+                                <div class="flex justify-between text-[10px] font-bold">
+                                    <span class="text-violet-400">MIX</span><span id="reverb-mix-val"
+                                        class="text-violet-400 font-mono">15 %</span>
+                                </div>
+                                <input type="range" id="reverb-mix" min="0" max="100" value="15" step="1"
+                                    class="reverb-slider w-full h-1.5 rounded appearance-none accent-violet-500">
+                            </div>
+                            <div class="space-y-1">
+                                <div class="flex justify-between text-[10px] font-bold">
+                                    <span class="text-violet-400">LOW EQ</span><span id="reverb-low-val"
+                                        class="text-violet-400 font-mono">-2 dB</span>
+                                </div>
+                                <input type="range" id="reverb-low" min="-12" max="6" value="-2" step="0.5"
+                                    class="reverb-slider w-full h-1.5 rounded appearance-none accent-violet-500">
+                            </div>
+                            <div class="space-y-1">
+                                <div class="flex justify-between text-[10px] font-bold">
+                                    <span class="text-violet-400">HIGH EQ</span><span id="reverb-high-val"
+                                        class="text-violet-400 font-mono">1 dB</span>
+                                </div>
+                                <input type="range" id="reverb-high" min="-12" max="6" value="1" step="0.5"
+                                    class="reverb-slider w-full h-1.5 rounded appearance-none accent-violet-500">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="master-compressor-panel" class="bg-[#03050a] p-2.5 rounded-xl border border-gray-800 space-y-2">
+                        <div class="flex justify-between items-center text-xs font-bold">
+                            <span class="text-cyan-400 text-[11px]"><i class="fa-solid fa-compress mr-1.5"></i> MASTER
+                                COMPRESSOR</span>
+                            <button id="compressor-toggle" type="button" aria-pressed="false"
+                                class="bg-gray-800 text-gray-400 text-[10px] font-bold px-2 py-0.5 rounded-md border border-gray-700 transition">OUT</button>
+                        </div>
+                        <div class="space-y-1">
+                            <div class="flex justify-between text-[10px] font-mono text-gray-400"><span>GAIN
+                                    REDUCTION</span><span id="comp-gr-val">0.0 dB</span></div>
+                            <div
+                                class="w-full h-2 bg-gray-900 rounded-full overflow-hidden relative border border-gray-950">
+                                <div id="comp-gr-bar"
+                                    class="h-full w-0 bg-gradient-to-r from-cyan-400 to-blue-500 transition-all duration-75">
+                                </div>
+                            </div>
+                        </div>
+                        <div id="compressor-graph-shell" class="effect-graph-shell compressor-graph-shell bg-gray-900 rounded-lg border border-gray-800 p-2">
+                            <div class="effect-graph-head"><span>TRANSFER CURVE</span><small>가로 Threshold · 세로 Ratio</small></div>
+                            <canvas id="comp-curve" class="w-full h-44 block"></canvas>
+                            <button type="button" class="effect-graph-resizer" data-resize-target="compressor-graph-shell" data-resize-key="jd-compressor-graph-height" aria-label="컴프레서 그래프 높이 조절"><i class="fa-solid fa-grip-lines"></i></button>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-2">
+                            <select id="comp-template-select"
+                                class="bg-gray-900 border border-gray-800 rounded-lg px-2 py-1.5 text-[11px] text-gray-300 outline-none">
+                                <option value="">Template</option>
+                            </select>
+                            <div class="flex gap-1">
+                                <input id="comp-template-name" type="text" placeholder="Name"
+                                    class="min-w-0 w-full sm:w-24 bg-gray-900 border border-gray-800 rounded-lg px-2 py-1.5 text-[11px] text-gray-300 outline-none">
+                                <button id="comp-template-save" type="button"
+                                    class="bg-cyan-600 hover:bg-cyan-500 text-white text-[10px] font-bold px-2.5 py-1.5 rounded-lg transition">SAVE</button>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div class="space-y-1">
+                                <div class="flex justify-between text-[10px] font-bold">
+                                    <span class="text-cyan-400">INPUT GAIN</span><span id="comp-inputgain-val"
+                                        class="text-cyan-400 font-mono">0 dB</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <button type="button"
+                                        class="comp-step-btn text-cyan-400 text-xs font-bold w-5 h-5 rounded bg-gray-900 border border-gray-800"
+                                        data-target="comp-inputgain" data-dir="-1">-</button>
+                                    <input type="range" id="comp-inputgain" min="-12" max="12" value="0" step="0.5"
+                                        class="comp-slider w-full h-1.5 rounded appearance-none accent-cyan-500">
+                                    <button type="button"
+                                        class="comp-step-btn text-cyan-400 text-xs font-bold w-5 h-5 rounded bg-gray-900 border border-gray-800"
+                                        data-target="comp-inputgain" data-dir="1">+</button>
+                                </div>
+                            </div>
+                            <div class="space-y-1">
+                                <div class="flex justify-between text-[10px] font-bold">
+                                    <span class="text-cyan-400">THRESHOLD</span><span id="comp-threshold-val"
+                                        class="text-cyan-400 font-mono">-24 dB</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <button type="button"
+                                        class="comp-step-btn text-cyan-400 text-xs font-bold w-5 h-5 rounded bg-gray-900 border border-gray-800"
+                                        data-target="comp-threshold" data-dir="-1">-</button>
+                                    <input type="range" id="comp-threshold" min="-60" max="0" value="-24" step="1"
+                                        class="comp-slider w-full h-1.5 rounded appearance-none accent-cyan-500">
+                                    <button type="button"
+                                        class="comp-step-btn text-cyan-400 text-xs font-bold w-5 h-5 rounded bg-gray-900 border border-gray-800"
+                                        data-target="comp-threshold" data-dir="1">+</button>
+                                </div>
+                            </div>
+                            <div class="space-y-1">
+                                <div class="flex justify-between text-[10px] font-bold">
+                                    <span class="text-cyan-400">RATIO</span><span id="comp-ratio-val"
+                                        class="text-cyan-400 font-mono">4.0:1</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <button type="button"
+                                        class="comp-step-btn text-cyan-400 text-xs font-bold w-5 h-5 rounded bg-gray-900 border border-gray-800"
+                                        data-target="comp-ratio" data-dir="-1">-</button>
+                                    <input type="range" id="comp-ratio" min="1" max="20" value="4" step="0.1"
+                                        class="comp-slider w-full h-1.5 rounded appearance-none accent-cyan-500">
+                                    <button type="button"
+                                        class="comp-step-btn text-cyan-400 text-xs font-bold w-5 h-5 rounded bg-gray-900 border border-gray-800"
+                                        data-target="comp-ratio" data-dir="1">+</button>
+                                </div>
+                            </div>
+                            <div class="space-y-1">
+                                <div class="flex justify-between text-[10px] font-bold">
+                                    <span class="text-cyan-400">ATTACK</span><span id="comp-attack-val"
+                                        class="text-cyan-400 font-mono">3 ms</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <button type="button"
+                                        class="comp-step-btn text-cyan-400 text-xs font-bold w-5 h-5 rounded bg-gray-900 border border-gray-800"
+                                        data-target="comp-attack" data-dir="-1">-</button>
+                                    <input type="range" id="comp-attack" min="0" max="1" value="0.003" step="0.001"
+                                        class="comp-slider w-full h-1.5 rounded appearance-none accent-cyan-500">
+                                    <button type="button"
+                                        class="comp-step-btn text-cyan-400 text-xs font-bold w-5 h-5 rounded bg-gray-900 border border-gray-800"
+                                        data-target="comp-attack" data-dir="1">+</button>
+                                </div>
+                            </div>
+                            <div class="space-y-1">
+                                <div class="flex justify-between text-[10px] font-bold">
+                                    <span class="text-cyan-400">RELEASE</span><span id="comp-release-val"
+                                        class="text-cyan-400 font-mono">250 ms</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <button type="button"
+                                        class="comp-step-btn text-cyan-400 text-xs font-bold w-5 h-5 rounded bg-gray-900 border border-gray-800"
+                                        data-target="comp-release" data-dir="-1">-</button>
+                                    <input type="range" id="comp-release" min="0.01" max="1" value="0.25" step="0.01"
+                                        class="comp-slider w-full h-1.5 rounded appearance-none accent-cyan-500">
+                                    <button type="button"
+                                        class="comp-step-btn text-cyan-400 text-xs font-bold w-5 h-5 rounded bg-gray-900 border border-gray-800"
+                                        data-target="comp-release" data-dir="1">+</button>
+                                </div>
+                            </div>
+                            <div class="space-y-1">
+                                <div class="flex justify-between text-[10px] font-bold">
+                                    <span class="text-cyan-400">KNEE</span><span id="comp-knee-val"
+                                        class="text-cyan-400 font-mono">30 dB</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <button type="button"
+                                        class="comp-step-btn text-cyan-400 text-xs font-bold w-5 h-5 rounded bg-gray-900 border border-gray-800"
+                                        data-target="comp-knee" data-dir="-1">-</button>
+                                    <input type="range" id="comp-knee" min="0" max="40" value="30" step="1"
+                                        class="comp-slider w-full h-1.5 rounded appearance-none accent-cyan-500">
+                                    <button type="button"
+                                        class="comp-step-btn text-cyan-400 text-xs font-bold w-5 h-5 rounded bg-gray-900 border border-gray-800"
+                                        data-target="comp-knee" data-dir="1">+</button>
+                                </div>
+                            </div>
+                            <div class="space-y-1">
+                                <div class="flex justify-between text-[10px] font-bold">
+                                    <span class="text-cyan-400">MAKE UP</span><span id="comp-makeup-val"
+                                        class="text-cyan-400 font-mono">6 dB</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <button type="button"
+                                        class="comp-step-btn text-cyan-400 text-xs font-bold w-5 h-5 rounded bg-gray-900 border border-gray-800"
+                                        data-target="comp-makeup" data-dir="-1">-</button>
+                                    <input type="range" id="comp-makeup" min="0" max="24" value="6" step="0.5"
+                                        class="comp-slider w-full h-1.5 rounded appearance-none accent-cyan-500">
+                                    <button type="button"
+                                        class="comp-step-btn text-cyan-400 text-xs font-bold w-5 h-5 rounded bg-gray-900 border border-gray-800"
+                                        data-target="comp-makeup" data-dir="1">+</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="master-limiter-panel" class="bg-[#03050a] p-2.5 rounded-xl border border-gray-800 space-y-2">
+                        <div class="flex justify-between items-center text-xs font-bold">
+                            <span class="text-lime-400 text-[11px]"><i class="fa-solid fa-gauge-high mr-1"></i>
+                                LOOKAHEAD LIMITER</span>
+                            <button id="limiter-toggle" type="button" aria-pressed="false"
+                                class="bg-gray-800 text-gray-400 text-[10px] font-bold px-2 py-0.5 rounded-md border border-gray-700 transition">OUT</button>
+                        </div>
+                        <div class="grid grid-cols-3 gap-2">
+                            <div class="space-y-1">
+                                <div class="flex justify-between text-[10px] font-mono text-gray-400">
+                                    <span>IN</span><span id="limiter-in-val">-inf</span></div>
+                                <div class="w-full h-2 bg-gray-900 rounded-full overflow-hidden border border-gray-950">
+                                    <div id="limiter-in-bar"
+                                        class="h-full w-0 bg-gradient-to-r from-lime-500 to-amber-400 transition-all duration-75">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="space-y-1">
+                                <div class="flex justify-between text-[10px] font-mono text-gray-400">
+                                    <span>GR</span><span id="limiter-gr-val">0.0 dB</span></div>
+                                <div class="w-full h-2 bg-gray-900 rounded-full overflow-hidden border border-gray-950">
+                                    <div id="limiter-gr-bar"
+                                        class="h-full w-0 bg-gradient-to-r from-lime-400 to-red-500 transition-all duration-75">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="space-y-1">
+                                <div class="flex justify-between text-[10px] font-mono text-gray-400">
+                                    <span>OUT</span><span id="limiter-out-val">-inf</span></div>
+                                <div class="w-full h-2 bg-gray-900 rounded-full overflow-hidden border border-gray-950">
+                                    <div id="limiter-out-bar"
+                                        class="h-full w-0 bg-gradient-to-r from-lime-500 to-yellow-300 transition-all duration-75">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-3 gap-2">
+                            <div class="space-y-1">
+                                <div class="flex justify-between text-[10px] font-bold">
+                                    <span class="text-lime-400">THRESHOLD</span><span id="limiter-threshold-val"
+                                        class="text-lime-400 font-mono">-1.0 dB</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <button type="button"
+                                        class="limiter-step-btn text-lime-400 text-xs font-bold w-5 h-5 rounded bg-gray-900 border border-gray-800"
+                                        data-target="limiter-threshold" data-dir="-1" aria-label="Threshold 감소">-</button>
+                                    <input type="range" id="limiter-threshold" min="-20" max="0" value="-1" step="0.1"
+                                        class="limiter-slider w-full h-1.5 rounded appearance-none accent-lime-500">
+                                    <button type="button"
+                                        class="limiter-step-btn text-lime-400 text-xs font-bold w-5 h-5 rounded bg-gray-900 border border-gray-800"
+                                        data-target="limiter-threshold" data-dir="1" aria-label="Threshold 증가">+</button>
+                                </div>
+                            </div>
+                            <div class="space-y-1">
+                                <div class="flex justify-between text-[10px] font-bold">
+                                    <span class="text-lime-400">RELEASE</span><span id="limiter-release-val"
+                                        class="text-lime-400 font-mono">100 ms</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <button type="button"
+                                        class="limiter-step-btn text-lime-400 text-xs font-bold w-5 h-5 rounded bg-gray-900 border border-gray-800"
+                                        data-target="limiter-release" data-dir="-1" aria-label="Release 감소">-</button>
+                                    <input type="range" id="limiter-release" min="10" max="1000" value="100" step="1"
+                                        class="limiter-slider w-full h-1.5 rounded appearance-none accent-lime-500">
+                                    <button type="button"
+                                        class="limiter-step-btn text-lime-400 text-xs font-bold w-5 h-5 rounded bg-gray-900 border border-gray-800"
+                                        data-target="limiter-release" data-dir="1" aria-label="Release 증가">+</button>
+                                </div>
+                            </div>
+                            <div class="space-y-1">
+                                <div class="flex justify-between text-[10px] font-bold">
+                                    <span class="text-lime-400">OUTPUT</span><span id="limiter-output-val"
+                                        class="text-lime-400 font-mono">0.0 dB</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <button type="button"
+                                        class="limiter-step-btn text-lime-400 text-xs font-bold w-5 h-5 rounded bg-gray-900 border border-gray-800"
+                                        data-target="limiter-output" data-dir="-1" aria-label="Output 감소">-</button>
+                                    <input type="range" id="limiter-output" min="-12" max="6" value="0" step="0.1"
+                                        class="limiter-slider w-full h-1.5 rounded appearance-none accent-lime-500">
+                                    <button type="button"
+                                        class="limiter-step-btn text-lime-400 text-xs font-bold w-5 h-5 rounded bg-gray-900 border border-gray-800"
+                                        data-target="limiter-output" data-dir="1" aria-label="Output 증가">+</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="limiter-advanced-content" class="limiter-advanced-content is-collapsed" aria-label="리미터 고급 분석">
+                            <div class="limiter-advanced-summary">
+                                <div><small>TRUE PEAK</small><strong id="limiter-true-peak">-∞ dBTP</strong></div>
+                                <div><small>OUTPUT CEILING</small><strong id="limiter-ceiling-now">0.0 dBTP</strong></div>
+                                <div><small>LIMITER MODE</small><strong>LOOKAHEAD 5 ms</strong></div>
+                            </div>
+                            <div class="limiter-visual-grid">
+                                <div class="limiter-visual-card">
+                                    <div class="limiter-visual-title"><span>GAIN REDUCTION HISTORY</span><span id="limiter-gr-now">0.0 dB</span></div>
+                                    <canvas id="limiter-gr-history-canvas" aria-label="게인 리덕션 히스토리"></canvas>
+                                    <div class="limiter-visual-legend"><span class="lime">Gain Reduction</span><span>최근 10초</span></div>
+                                </div>
+                                <div class="limiter-visual-card">
+                                    <div class="limiter-visual-title"><span>TRANSFER CURVE</span><span id="limiter-curve-info">Threshold / Ceiling</span></div>
+                                    <canvas id="limiter-transfer-canvas" aria-label="리미터 트랜스퍼 곡선"></canvas>
+                                    <div class="limiter-visual-legend"><span class="lime">Output</span><span class="amber">Ceiling</span></div>
+                                </div>
+                                <div class="limiter-visual-card">
+                                    <div class="limiter-visual-title"><span>LOOKAHEAD PEAK TRACE</span><span id="limiter-peak-now">-∞ dB</span></div>
+                                    <canvas id="limiter-peak-trace-canvas" aria-label="룩어헤드 피크 추적"></canvas>
+                                    <div class="limiter-visual-legend"><span class="amber">Input</span><span class="lime">Limited Output</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-[#03050a] p-2.5 rounded-xl border border-gray-800 space-y-1">
+                        <div class="flex justify-between text-xs font-bold">
+                            <span class="text-rose-400 text-[11px]"><i class="fa-solid fa-filter-circle-xmark mr-1"></i>
+                                AI NOISE REDUCTION</span>
+                            <span id="noise-val" class="text-rose-400 font-mono text-[11px]">0 %</span>
+                        </div>
+                        <input type="range" id="noise-reducer" min="0" max="100" value="0"
+                            class="w-full h-1.5 bg-gray-800 rounded appearance-none accent-rose-500">
+                    </div>
+
+                    <div class="bg-[#03050a] p-2.5 rounded-xl border border-gray-800 space-y-1">
+                        <div class="flex justify-between text-xs font-bold">
+                            <span class="text-sky-400 text-[11px]"><i class="fa-solid fa-scissors mr-1"></i> 지찰음 제어
+                                (De-Esser @6.5kHz)</span>
+                            <span id="deesser-val" class="text-sky-400 font-mono text-[11px]">0 %</span>
+                        </div>
+                        <input type="range" id="deesser-reducer" min="0" max="100" value="0"
+                            class="w-full h-1.5 bg-gray-800 rounded appearance-none accent-sky-500">
+                    </div>
+
+                    <div class="bg-[#03050a] p-2.5 rounded-xl border border-gray-800 space-y-1">
+                        <div class="flex justify-between text-xs font-bold">
+                            <span class="text-amber-400 text-[11px]"><i class="fa-solid fa-fire-flame-curved mr-1"></i>
+                                진공관 배음 익사이터 (4x Oversampled)</span>
+                            <span id="saturator-val" class="text-amber-400 font-mono text-[11px]">0 %</span>
+                        </div>
+                        <input type="range" id="saturator-volume" min="0" max="100" value="0"
+                            class="w-full h-1.5 bg-gray-800 rounded appearance-none accent-amber-500">
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="main-workbench-column lg:col-span-8 space-y-5">
+                <!-- AI Audio Waveform Analyzer -->
+                <div id="waveform-analyzer-panel" class="bg-[#090d16] p-5 rounded-2xl border border-gray-800 space-y-3 shadow-xl">
+                    <div class="flex justify-between items-center border-b border-gray-800 pb-2">
+                        <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-waveform text-cyan-400 animate-pulse"></i> AI Audio Waveform Analyzer
+                        </h3>
+                        <span id="waveform-time" class="text-xs text-gray-400 font-mono">00:00 / 00:00</span>
+                    </div>
+                    <div class="waveform-canvas-shell bg-[#03050a] p-3 rounded-xl border border-gray-800 space-y-2">
+                        <canvas id="audio-waveform" class="w-full h-28 block cursor-pointer"></canvas>
+                        <div id="waveform-load-message" class="waveform-load-message hidden" role="status" aria-live="polite"></div>
+                    </div>
+                    <div id="waveform-lyrics" class="waveform-lyrics hidden" aria-label="시간 동기화 가사" aria-live="polite" aria-atomic="true">
+                        <i class="fa-solid fa-closed-captioning" aria-hidden="true"></i>
+                        <p id="waveform-lyrics-text"></p>
+                    </div>
+                    <div id="global-player-shell" class="global-player-shell" data-player-mode="inner">
+                    <div class="waveform-transport" aria-label="오디오 재생 컨트롤">
+                        <div class="transport-volume">
+                            <div class="transport-label-row">
+                                <span><i class="fa-solid fa-volume-high"></i> OUTPUT</span>
+                                <span id="master-val">100 %</span>
+                            </div>
+                            <div class="transport-volume-body">
+                                <div class="transport-volume-control">
+                                    <button type="button" class="transport-step-btn" data-target="master-volume"
+                                        data-dir="-1" aria-label="출력 볼륨 감소">-</button>
+                                    <input type="range" id="master-volume" min="0" max="150" value="100" step="1"
+                                        aria-label="출력 볼륨" class="transport-range transport-range-volume">
+                                    <button type="button" class="transport-step-btn" data-target="master-volume"
+                                        data-dir="1" aria-label="출력 볼륨 증가">+</button>
+                                </div>
+                                <div class="output-level-meter" role="meter" aria-label="스테레오 출력 레벨" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                                    <span class="meter-scale"><b>Raw</b><b>0</b></span>
+                                    <span id="level-meter-left" class="meter-channel" aria-label="왼쪽 채널"></span>
+                                    <span id="level-meter-right" class="meter-channel" aria-label="오른쪽 채널"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="transport-center">
+                            <div class="transport-buttons">
+                                <button id="skip-back-btn" type="button" class="transport-btn transport-skip" data-audio-transport disabled title="10초 뒤로" aria-label="10초 뒤로">
+                                    <i class="fa-solid fa-backward"></i><small>-10</small>
+                                </button>
+                                <button id="seek-start-btn" type="button" class="transport-btn" data-audio-transport disabled title="처음으로" aria-label="처음으로">
+                                    <i class="fa-solid fa-angles-left"></i>
+                                </button>
+                                <button id="play-btn" class="transport-play opacity-40 cursor-not-allowed" disabled title="재생" aria-label="재생">
+                                    <i class="fa-solid fa-play ml-0.5"></i>
+                                </button>
+                                <button id="seek-end-btn" type="button" class="transport-btn" data-audio-transport disabled title="마지막으로" aria-label="마지막으로">
+                                    <i class="fa-solid fa-angles-right"></i>
+                                </button>
+                                <button id="skip-forward-btn" type="button" class="transport-btn transport-skip" data-audio-transport disabled title="10초 앞으로" aria-label="10초 앞으로">
+                                    <i class="fa-solid fa-forward"></i><small>+10</small>
+                                </button>
+                                <button id="loop-btn" type="button" aria-pressed="false" class="transport-btn" data-audio-transport disabled title="반복 재생" aria-label="반복 재생">
+                                    <i class="fa-solid fa-repeat"></i>
+                                </button>
+                                <button id="section-repeat-btn" type="button" aria-pressed="false" class="transport-btn transport-ab-repeat" data-audio-transport disabled title="구간 반복" aria-label="구간 반복">
+                                    <i class="fa-solid fa-expand"></i><small>AB</small>
+                                </button>
+                                <div class="transport-ab">
+                                    <button id="bypass-a" class="is-active">A:RAW</button>
+                                    <button id="bypass-b">B:MASTER</button>
+                                </div>
+                            </div>
+                            <div class="transport-timeline">
+                                <span id="time-display">00:00</span>
+                                <input type="range" id="progress-bar" min="0" max="100" value="0" disabled aria-label="재생 위치">
+                                <span id="progress-percent" aria-label="전체 재생 시간">00:00</span>
+                            </div>
+                        </div>
+
+                        <div class="transport-spatial">
+                            <button id="player-float-toggle" type="button" class="player-float-toggle" aria-pressed="false" title="플레이바 플로팅" aria-label="플레이바 플로팅">
+                                <i class="fa-solid fa-up-right-and-down-left-from-center"></i>
+                            </button>
+                            <div class="transport-track-nav" aria-label="곡 이동">
+                                <button id="track-prev-btn" type="button" class="transport-track-btn" data-audio-transport disabled title="이전 곡" aria-label="이전 곡">
+                                    <i class="fa-solid fa-backward-step"></i>
+                                </button>
+                                <button id="track-next-btn" type="button" class="transport-track-btn" data-audio-transport disabled title="다음 곡" aria-label="다음 곡">
+                                    <i class="fa-solid fa-forward-step"></i>
+                                </button>
+                            </div>
+                            <label for="pan-control"><span>Pan</span><output id="pan-val">C</output></label>
+                            <div class="spatial-control-row">
+                                <button type="button" data-spatial-target="pan-control" data-spatial-delta="-1" aria-label="Pan 감소">−</button>
+                                <input type="range" id="pan-control" min="-100" max="100" value="0" step="1" aria-label="좌우 패닝" title="더블클릭하면 중앙(0)으로 초기화">
+                                <button type="button" data-spatial-target="pan-control" data-spatial-delta="1" aria-label="Pan 증가">+</button>
+                            </div>
+                            <label for="front-control"><span>Front</span><output id="front-val">0</output></label>
+                            <div class="spatial-control-row">
+                                <button type="button" data-spatial-target="front-control" data-spatial-delta="-1" aria-label="Front 감소">−</button>
+                                <input type="range" id="front-control" min="-100" max="100" value="0" step="1" aria-label="전후 거리감" title="더블클릭하면 중앙(0)으로 초기화">
+                                <button type="button" data-spatial-target="front-control" data-spatial-delta="1" aria-label="Front 증가">+</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="section-repeat-editor" class="section-repeat-editor hidden" aria-label="구간 반복 범위">
+                        <span id="section-repeat-start-label">00:00</span>
+                        <div id="section-repeat-bar" class="section-repeat-bar" title="빈 곳을 드래그해 구간 지정 · 핸들을 드래그해 범위 조절">
+                            <div class="section-repeat-progress"></div>
+                            <div id="section-repeat-region" class="section-repeat-region"></div>
+                            <div id="section-repeat-playhead" class="section-repeat-playhead"></div>
+                            <span id="section-repeat-duration-label" class="section-repeat-duration-label">선택 00:00</span>
+                            <span id="section-repeat-start-badge" class="section-repeat-time-badge">A 00:00</span>
+                            <span id="section-repeat-end-badge" class="section-repeat-time-badge">B 00:00</span>
+                            <button id="section-repeat-start-handle" type="button" class="section-repeat-handle" aria-label="구간 시작"></button>
+                            <button id="section-repeat-end-handle" type="button" class="section-repeat-handle" aria-label="구간 끝"></button>
+                        </div>
+                        <span id="section-repeat-end-label">00:00</span>
+                    </div>
+                    </div>
+                </div>
+
+                <div id="main-master-effects" class="main-master-effects" aria-label="마스터 이펙터"></div>
+
+                <!-- AI 20-Channel Stem Automator Console (접히는 기능) -->
+                <div id="stem-console-section" class="bg-[#090d16] p-5 rounded-2xl border border-gray-800 space-y-3 shadow-xl" hidden>
+                    <div class="flex justify-between items-center border-b border-gray-800 pb-2">
+                        <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-server text-purple-400"></i> AI 20-Channel Stem Automator Console
+                            <span id="detector-status" class="text-xs text-blue-400 font-mono font-normal ml-2">(추출 대기
+                                중)</span>
+                        </h3>
+                        <div class="flex items-center gap-2">
+                            <button id="stems-toggle" type="button" aria-pressed="false"
+                                class="bg-gray-800 text-gray-400 text-[10px] font-bold px-2 py-0.5 rounded-md border border-gray-700 transition">OUT</button>
+                            <button id="stems-collapse-btn" type="button"
+                                class="text-gray-400 hover:text-white transition text-xs p-1" title="Toggle Collapse">
+                                <i id="stems-collapse-icon" class="fa-solid fa-chevron-down"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="stems-collapse-content" class="transition-all duration-300 hidden">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-[420px] overflow-y-auto pr-1 mt-3"
+                            id="stems-matrix-container"></div>
+                    </div>
+                </div>
+
+                <!-- 20-Band Graphic Parametric Equalizer -->
+                <section id="eq-panel" class="eq-panel">
+                    <header class="eq-panel-header">
+                        <h3>
+                            <i class="fa-solid fa-chart-simple"></i>
+                            <span>20-BAND PARAMETRIC GRAPHIC EQUALIZER</span>
+                        </h3>
+                        <div class="eq-header-actions">
+                            <select id="eq-preset-select" class="eq-preset-select" aria-label="EQ preset">
+                                <option value="builtin:flat">Flat</option>
+                                <option value="builtin:streamingSafe">Streaming Safe</option>
+                                <option value="builtin:masteringBalanced">Mastering Balanced</option>
+                                <option value="builtin:popModern">Pop Modern</option>
+                            </select>
+                            <input id="eq-preset-name" class="eq-preset-name" type="text" maxlength="40" placeholder="Preset name">
+                            <button id="eq-preset-save" type="button" class="eq-preset-action">SAVE</button>
+                            <button id="eq-preset-delete" type="button" class="eq-preset-action is-danger" disabled>DEL</button>
+                            <button id="eq-toggle" type="button" aria-pressed="false" class="eq-toggle">OUT</button>
+                            <button id="eq-collapse-btn" type="button" class="eq-collapse-btn" title="EQ 접기/펼치기"
+                                aria-controls="eq-collapse-content" aria-expanded="false">
+                                <i id="eq-collapse-icon" class="fa-solid fa-chevron-down"></i>
+                            </button>
+                        </div>
+                    </header>
+                    <div id="eq-collapse-content" class="eq-collapse-content hidden">
+                        <div id="eq-response-shell" class="eq-response-shell">
+                            <canvas id="eq-response-canvas" tabindex="0"
+                                aria-label="20밴드 EQ 응답 그래프. 포인트를 위아래로 드래그하여 게인을 조절합니다."></canvas>
+                            <div class="eq-graph-help"><i class="fa-solid fa-computer-mouse"></i> 포인트 드래그 · 더블클릭 0 dB</div>
+                            <button type="button" class="effect-graph-resizer eq-graph-resizer"
+                                data-resize-target="eq-response-shell" data-resize-key="jd-eq-graph-height"
+                                aria-label="EQ 그래프 높이 조절"><i class="fa-solid fa-grip-lines"></i></button>
+                        </div>
+                        <div id="eq-slider-frame" class="eq-slider-frame">
+                            <div class="eq-slider-axis" aria-hidden="true">
+                                <span>+12 dB</span><span>+9 dB</span><span>+6 dB</span><span>+3 dB</span><span>0 dB</span><span>-3 dB</span><span>-6 dB</span><span>-9 dB</span><span>-12 dB</span>
+                            </div>
+                            <div id="eq-sliders-container" class="eq-sliders-container"></div>
+                            <button type="button" class="effect-graph-resizer eq-slider-resizer"
+                                data-resize-target="eq-slider-frame" data-resize-key="jd-eq-slider-height"
+                                aria-label="EQ 슬라이더 높이 조절"><i class="fa-solid fa-grip-lines"></i></button>
+                        </div>
+                        <div id="post-eq-effects" class="grid grid-cols-1 md:grid-cols-3 gap-3"></div>
+                    </div>
+                </section>
+
+                <!-- Master Saturation -->
+                <section id="master-saturation-panel" class="saturation-panel">
+                    <header class="saturation-header">
+                        <h3>
+                            <i class="fa-solid fa-microphone-lines"></i>
+                            <span>MASTER SATURATION</span>
+                        </h3>
+                        <div class="saturation-header-actions">
+                            <button id="saturation-toggle" type="button" aria-pressed="false" class="saturation-toggle">OUT</button>
+                            <select id="saturation-preset" class="saturation-preset" aria-label="Saturation preset">
+                                <option value="default">Default</option>
+                            </select>
+                            <button id="saturation-collapse-btn" type="button" class="saturation-collapse-btn"
+                                title="Saturation 접기/펼치기" aria-controls="saturation-collapse-content"
+                                aria-expanded="false">
+                                <i id="saturation-collapse-icon" class="fa-solid fa-chevron-down"></i>
+                            </button>
+                        </div>
+                    </header>
+                    <div id="saturation-collapse-content" class="saturation-collapse-content is-collapsed">
+                        <div class="saturation-main-grid">
+                            <article class="saturation-card saturation-harmonics-card">
+                                <div class="saturation-card-title">
+                                    <span>HARMONIC SPECTRUM</span>
+                                    <span id="saturation-harmonic-total">-24.7 dB</span>
+                                </div>
+                                <canvas id="saturation-harmonics-canvas" aria-label="Saturation harmonic spectrum"></canvas>
+                            </article>
+                            <article class="saturation-card">
+                                <div class="saturation-card-title">
+                                    <span>SOFT CLIP CURVE</span>
+                                    <span id="saturation-clip-gr">-1.2 dB GR</span>
+                                </div>
+                                <canvas id="saturation-curve-canvas" aria-label="Saturation soft clip curve"></canvas>
+                            </article>
+                            <article class="saturation-card">
+                                <div class="saturation-card-title">
+                                    <span>FREQUENCY RESPONSE</span>
+                                    <span id="saturation-response-mid">+1.8 dB</span>
+                                </div>
+                                <canvas id="saturation-response-canvas" aria-label="Saturation frequency response"></canvas>
+                            </article>
+                        </div>
+
+                        <article class="saturation-card saturation-band-card">
+                            <div class="saturation-card-title">
+                                <span>SATURATION BAND</span>
+                                <span id="saturation-band-info">223 Hz - 2.35 kHz</span>
+                            </div>
+                            <canvas id="saturation-band-canvas" aria-label="Saturation band visualizer"></canvas>
+                        </article>
+
+                        <div class="saturation-control-grid">
+                            <label class="saturation-control saturation-drive-control">
+                                <span>DRIVE <b id="saturation-drive-val">2.3 dB</b></span>
+                                <input id="saturation-drive" class="saturation-slider" type="range" min="0" max="48" step="0.1" value="2.3">
+                            </label>
+                            <label class="saturation-control">
+                                <span>MIX <b id="saturation-mix-val">61 %</b></span>
+                                <input id="saturation-mix" class="saturation-slider" type="range" min="0" max="100" step="1" value="61">
+                            </label>
+                            <label class="saturation-control">
+                                <span>TONE <b id="saturation-tone-val">Bright +12</b></span>
+                                <input id="saturation-tone" class="saturation-slider" type="range" min="-100" max="100" step="1" value="12">
+                            </label>
+                            <label class="saturation-control">
+                                <span>BIAS <b id="saturation-bias-val">0</b></span>
+                                <input id="saturation-bias" class="saturation-slider" type="range" min="-100" max="100" step="1" value="0">
+                            </label>
+                            <label class="saturation-control">
+                                <span>CHARACTER <b id="saturation-character-val">42 %</b></span>
+                                <input id="saturation-character" class="saturation-slider" type="range" min="0" max="100" step="1" value="42">
+                            </label>
+                            <label class="saturation-control">
+                                <span>EVEN / ODD <b id="saturation-evenodd-val">35% EVEN</b></span>
+                                <input id="saturation-evenodd" class="saturation-slider" type="range" min="0" max="100" step="1" value="35">
+                            </label>
+                            <label class="saturation-control">
+                                <span>DYNAMICS <b id="saturation-dynamics-val">-10 %</b></span>
+                                <input id="saturation-dynamics" class="saturation-slider" type="range" min="-100" max="100" step="1" value="-10">
+                            </label>
+                            <label class="saturation-control">
+                                <span>OVERSAMPLING <b id="saturation-oversampling-val">4x</b></span>
+                                <select id="saturation-oversampling" class="saturation-select">
+                                    <option value="1">1x</option>
+                                    <option value="2">2x</option>
+                                    <option value="4" selected>4x</option>
+                                </select>
+                            </label>
+                            <div class="saturation-control saturation-mode-control">
+                                <span>MODE</span>
+                                <div class="saturation-mode-buttons">
+                                    <button type="button" data-saturation-mode="tube" class="is-active">TUBE</button>
+                                    <button type="button" data-saturation-mode="tape">TAPE</button>
+                                    <button type="button" data-saturation-mode="transformer">TRANSFORMER</button>
+                                    <button type="button" data-saturation-mode="clean">CLEAN</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="saturation-output-master">
+                            <label class="saturation-output-large">
+                                <span>
+                                    <strong>OUTPUT</strong>
+                                    <b id="saturation-output-val">0.0 dB</b>
+                                </span>
+                                <input id="saturation-output" class="saturation-slider saturation-output-slider" type="range" min="-12" max="12" step="0.1" value="0">
+                            </label>
+                            <div class="saturation-output-meter" aria-label="Saturation output level meter">
+                                <div class="saturation-output-meter-head">
+                                    <span>LEVEL METER</span>
+                                    <b id="saturation-output-meter-db">-inf dB</b>
+                                </div>
+                                <div class="saturation-output-meter-track">
+                                    <i></i><i></i><i></i>
+                                    <div id="saturation-output-meter-fill"></div>
+                                </div>
+                                <div class="saturation-output-meter-scale">
+                                    <span>-48</span><span>-24</span><span>-12</span><span>-6</span><span>0 dB</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </section>
+
+                <section id="master-spread-panel" class="spread-panel">
+                    <div class="spread-panel-header">
+                        <div>
+                            <h3><i class="fa-solid fa-arrows-left-right-to-line"></i> SPREAD</h3>
+                            <p>STEREO WIDTH</p>
+                        </div>
+                        <div class="spread-header-actions">
+                            <select id="spread-preset" class="spread-preset" aria-label="Spread preset">
+                                <option value="default">Default</option>
+                            </select>
+                            <button id="spread-toggle" type="button" aria-pressed="false">OUT</button>
+                            <button id="spread-collapse-btn" type="button" aria-expanded="false" aria-controls="spread-collapse-content" title="접기/펼치기"><i id="spread-collapse-icon" class="fa-solid fa-chevron-down"></i></button>
+                        </div>
+                    </div>
+                    <div id="spread-collapse-content" class="spread-content is-collapsed">
+                        <div class="spread-stage" aria-label="Spread stereo field visualizer">
+                            <span class="spread-speaker spread-speaker-left">L</span>
+                            <span class="spread-speaker spread-speaker-right">R</span>
+                            <div class="spread-arc"></div>
+                            <div id="spread-left-beam" class="spread-beam spread-beam-left"></div>
+                            <div id="spread-right-beam" class="spread-beam spread-beam-right"></div>
+                            <div id="spread-center-dot" class="spread-center-dot"></div>
+                            <div class="spread-main-readout"><span>SPREAD</span><strong id="spread-main-value">45%</strong></div>
+                        </div>
+                        <div class="spread-control-grid">
+                            <label class="spread-control">
+                                <span>SPREAD <b id="spread-width-val">45%</b></span>
+                                <input id="spread-width" class="spread-slider" type="range" min="0" max="100" step="1" value="45">
+                            </label>
+                            <label class="spread-control">
+                                <span>CENTER <b id="spread-center-val">0.0 dB</b></span>
+                                <input id="spread-center" class="spread-slider" type="range" min="-12" max="6" step="0.1" value="0">
+                            </label>
+                            <label class="spread-control">
+                                <span>COPY LEVEL <b id="spread-side-val">-9.0 dB</b></span>
+                                <input id="spread-side" class="spread-slider" type="range" min="-24" max="0" step="0.1" value="-9">
+                            </label>
+                            <label class="spread-control">
+                                <span>LOW CUT <b id="spread-lowcut-val">160 Hz</b></span>
+                                <input id="spread-lowcut" class="spread-slider" type="range" min="60" max="400" step="1" value="160">
+                            </label>
+                        </div>
+                        <div class="spread-meter-row">
+                            <div class="spread-signal-flow">
+                                <span>INPUT</span><i></i><b>COPY L/R</b><b>WIDTH</b><b>LEVEL</b>
+                            </div>
+                            <div class="spread-correlation">
+                                <span>CORRELATION / MONO CHECK</span>
+                                <div class="spread-correlation-track"><i id="spread-correlation-fill"></i><em></em></div>
+                                <strong id="spread-correlation-val">0.58</strong>
+                            </div>
+                        </div>
+                        <p id="spread-warning" class="spread-warning"></p>
+                    </div>
+                </section>
+
+                <div id="audio-timeline-panel" class="audio-timeline-panel">
+                    <button id="audio-timeline-header" type="button" class="audio-timeline-header"
+                        aria-expanded="false" aria-controls="audio-timeline-content">
+                        <span><i class="fa-solid fa-music"></i> 오디오 타임라인</span>
+                        <span class="audio-timeline-hint">각 슬라이드 = 한 곡의 마스터링 세팅</span>
+                        <span id="audio-timeline-summary">0 clips</span>
+                        <i id="audio-timeline-chevron" class="fa-solid fa-chevron-down"></i>
+                    </button>
+                    <div id="audio-timeline-content" class="audio-timeline-content hidden">
+                        <div class="audio-timeline-help">
+                            <span>순차 재생 · 각 곡은 볼륨/Fade/마스터링 세팅을 개별 저장합니다.</span>
+                            <span id="audio-timeline-track-count">0개 트랙</span>
+                        </div>
+                        <div class="audio-timeline-gap-control" aria-label="곡 사이 무음 간격">
+                            <span><b>곡 사이 빈 공간</b><em id="audio-timeline-gap-val">2000 ms</em></span>
+                            <button type="button" id="audio-timeline-gap-minus" aria-label="곡 사이 간격 줄이기">−</button>
+                            <input id="audio-timeline-gap" type="range" min="0" max="10000" step="10" value="2000">
+                            <button type="button" id="audio-timeline-gap-plus" aria-label="곡 사이 간격 늘리기">+</button>
+                            <button type="button" id="audio-timeline-gap-apply-all" class="audio-timeline-gap-apply-all"
+                                aria-label="모든 곡 사이 간격을 같은 값으로 적용">ALL</button>
+                        </div>
+                        <div id="audio-timeline-strip" class="audio-timeline-strip">
+                                <div class="audio-timeline-empty" data-timeline-action="appendUpload" role="button" tabindex="0" aria-label="오디오 타임라인에 음원 추가">
+                                    <i class="fa-solid fa-plus"></i>
+                                    <span>음원을 업로드하면 이곳에 오디오 타임라인이 생성됩니다.</span>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI 100-Preset Mastering Library -->
+                <div id="ai-100-preset-section" class="bg-[#090d16] p-4 rounded-2xl border border-gray-800 space-y-2 shadow-xl" hidden>
+                    <h3 class="text-xs font-bold text-gray-300 uppercase tracking-wider flex items-center gap-1.5">
+                        <i class="fa-solid fa-compact-disc text-blue-400"></i> AI 100 Micro Mastering Presets
+                    </h3>
+                    <div class="grid grid-cols-2 gap-1.5 max-h-48 overflow-y-auto pr-1 text-xs" id="genre-grid"></div>
+                </div>
+            </div>
+
+        </div>
+
+        <section id="jjim-handoff-panel" class="jjim-handoff-panel jjim-handoff-bottom" aria-labelledby="jjim-handoff-title">
+            <button id="jjim-handoff-toggle" type="button" class="jjim-handoff-heading"
+                aria-expanded="true" aria-controls="jjim-handoff-content">
+                <span class="jjim-handoff-heading-copy">
+                    <span id="jjim-handoff-title" class="jjim-handoff-title"><i class="fa-solid fa-paper-plane"></i> 원곡 정보 · JJaIMsae</span>
+                    <span class="jjim-handoff-description">오디오·가사 SRT·커버·Suno URL을 확인하거나 직접 입력합니다.</span>
+                </span>
+                <span class="jjim-handoff-heading-actions">
+                    <span id="jjim-package-badge" class="jjim-package-badge">정보 대기</span>
+                    <i id="jjim-handoff-chevron" class="fa-solid fa-chevron-up" aria-hidden="true"></i>
+                </span>
+            </button>
+            <div id="jjim-handoff-content" class="jjim-handoff-content">
+                <div class="jjim-source-grid">
+                    <label class="jjim-cover-picker" for="jjim-cover-input">
+                        <img id="jjim-cover-preview" alt="전송할 커버 이미지 미리보기">
+                        <span id="jjim-cover-placeholder"><i class="fa-regular fa-image"></i> 커버 선택</span>
+                        <input id="jjim-cover-input" type="file" accept="image/png,image/jpeg,image/webp" hidden>
+                    </label>
+                    <div class="jjim-source-fields">
+                        <label>곡 제목<input id="jjim-source-title" type="text" maxlength="300" placeholder="곡 제목"></label>
+                        <label>Suno URL<input id="jjim-source-url" type="url" placeholder="https://suno.com/song/..."></label>
+                        <label id="jjim-srt-status" class="jjim-srt-status" for="jjim-srt-input">
+                            <span><i class="fa-solid fa-closed-captioning"></i> 가사 SRT <small>클릭하여 직접 업로드</small></span>
+                            <strong id="jjim-srt-filename">수신 대기</strong>
+                            <input id="jjim-srt-input" type="file" accept=".srt,.vtt,application/x-subrip,text/srt,text/vtt" hidden>
+                        </label>
+                    </div>
+                </div>
+                <p id="jjim-handoff-status" class="jjim-handoff-status" role="status" aria-live="polite">
+                    Suno 전송 정보를 기다리거나 필요한 항목을 직접 입력하세요.
+                </p>
+                <div class="jjim-handoff-actions">
+                    <button id="jjim-send-track" type="button" disabled><i class="fa-solid fa-music"></i> 원곡을 짜임새 곡에 보내기</button>
+                    <button id="jjim-send-album" type="button" disabled><i class="fa-solid fa-compact-disc"></i> 원곡을 싱글앨범에 보내기</button>
+                </div>
+                <p class="jjim-handoff-note">이 버튼은 마스터링되지 않은 원곡을 보냅니다. 최종 등록은 내용을 확인한 뒤 직접 실행하세요.</p>
+            </div>
+        </section>
+    </div>
+
+    <div id="mastered-handoff-dialog" class="mastered-handoff-dialog hidden" role="dialog" aria-modal="true"
+        aria-labelledby="mastered-handoff-title">
+        <div class="mastered-handoff-card">
+            <button id="mastered-handoff-close" type="button" class="mastered-handoff-close" aria-label="마스터 전송 창 닫기">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="mastered-handoff-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+            <h2 id="mastered-handoff-title">마스터링 결과 전송</h2>
+            <p>Mastering Data Execute로 생성된 WAV를 커버·제목·Suno URL·가사와 함께 보냅니다.</p>
+            <div id="mastered-handoff-file" class="mastered-handoff-file">마스터 WAV 준비됨</div>
+            <p id="mastered-handoff-status" class="mastered-handoff-status" role="status" aria-live="polite">
+                보낼 위치를 선택하세요.
+            </p>
+            <div class="mastered-handoff-actions mastered-primary-actions">
+                <button id="mastered-send-player" type="button"><i class="fa-solid fa-headphones"></i> 플레이어로 보내기</button>
+                <button id="mastered-download-pc" type="button"><i class="fa-solid fa-download"></i> PC 다운로드</button>
+            </div>
+            <div id="jjim-mastered-target-actions" class="mastered-handoff-actions" hidden>
+                <button id="jjim-mastered-track" type="button"><i class="fa-solid fa-music"></i> 마스터 곡에 보내기</button>
+                <button id="jjim-mastered-album" type="button"><i class="fa-solid fa-compact-disc"></i> 마스터 싱글앨범에 보내기</button>
+            </div>
+            <small>플레이어 전송은 마스터링 WAV를 새 곡으로 추가합니다. JJaIMsae 전송은 설정에서 표시할 수 있습니다.</small>
+        </div>
+    </div>
+
+    <script src="effector/EQ/eq.js?v=20260918-1"></script>
+    <script src="effector/reverb/reverb.js?v=20260628-20"></script>
+    <script src="effector/Compressor/compressor.js?v=20260628-20"></script>
+    <script src="effector/limitor/limiter.js?v=20260918-1"></script>
+    <script src="effector/Saturation/saturation.js?v=20260918-1"></script>
+    <script src="effector/spreaddp/spread.js?v=20260629-1"></script>
+    <script src="UploadeFiles/jjim-handoff.js?v=20260922-2"></script>
+    <script src="UploadeFiles/audio-upload.js?v=20260922-1"></script>
+    <script src="index.js?v=20260922-4"></script>
+</body>
+
+</html>

@@ -1,0 +1,8 @@
+JJaIMsae Player 내장 FFmpeg 위치
+
+이 폴더에 Windows x64용 다음 두 파일을 넣으십시오.
+- ffmpeg.exe
+- ffprobe.exe
+
+중요: exe를 넣은 뒤 cargo tauri build를 실행해야 설치 프로그램에 포함됩니다.
+PC PATH에 FFmpeg를 설치할 필요가 없습니다.
