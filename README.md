@@ -2,14 +2,14 @@
 
 ## Windows 앱 다운로드
 
-### [⬇ Windows 설치 파일 바로 다운로드 (v2.0.1 · 64비트)](https://github.com/shoutjoy/m4aplayer/releases/download/v2.0.1/JJaIMsae.Player_2.0.1_x64-setup.exe)
+### [⬇ Windows 설치 파일 바로 다운로드 (v2.0.2 · 64비트)](https://github.com/shoutjoy/m4aplayer/releases/download/v2.0.2/JJaIMsae.Player_2.0.2_x64-setup.exe)
 
 위 링크를 누르면 설치 파일을 바로 다운로드합니다. 다운로드한 `.exe`를 실행하세요. FFmpeg와 FFprobe가 포함되어 별도로 설치할 필요가 없습니다.
 
 - [최신 릴리스 및 설치 파일 목록](https://github.com/shoutjoy/m4aplayer/releases/latest)
 - [자동 빌드 실행 및 다운로드](https://github.com/shoutjoy/m4aplayer/actions/workflows/release.yml): `Run workflow` 실행 후 성공한 실행의 `Artifacts`에서 설치 파일 ZIP을 받습니다(GitHub 로그인 필요, 30일 보관).
 
-현재 공개된 설치 파일은 v2.0.1입니다. 아래에 설명한 추가 개발 기능을 포함하는 v2.0.2는 아직 GitHub에 배포되지 않았습니다.
+현재 공개 버전은 **v2.0.2**입니다. 이미지 편집·AI 이미지 생성/편집, 곡별 이미지/영상 슬라이드, 이미지 포함 프로젝트, SRT 편집, EQ·피크·라우드니스·음향 분석 등 아래에 설명한 최신 기능을 포함합니다.
 
 Cargo + Tauri 2 기반 로컬 미디어 플레이어/가사/시각화/마스터링 통합 앱.
 m4a를 재생하는 도구가 window나 mac에서 실제로 비용을 내야하는 도구가 많아서 직접 만든 것이다. 오프라인에서 동작하도록 설계하였다. 
