@@ -78,7 +78,7 @@ Tauri bundle resources 설정에 의해 두 실행파일이 설치 패키지에 
 
 저장소의 `Actions` 탭에서 `Build and Release Windows App` 워크플로우를 수동 실행하면 Windows NSIS 설치 프로그램이 빌드된다. 완료 후 해당 실행 화면의 `Artifacts`에서 `JJaIMsae-Player-Windows-NSIS`를 다운로드할 수 있으며, 이 임시 파일은 30일 동안 보관된다.
 
-정식 배포는 `src-tauri/tauri.conf.json`의 버전과 같은 Git 태그를 사용한다. 현재 버전 `2.0.2`는 다음과 같이 배포한다.
+정식 배포는 `src-tauri/tauri.conf.json`의 버전과 같은 Git 태그를 사용한다. `v2.0.1`은 이미 배포된 태그이므로 다시 만들지 않는다. 다음 v2.0.2를 배포할 때는 먼저 버전 설정과 최신 소스를 커밋·푸시한 뒤 아래 두 명령을 각각 실행한다.
 
 ```bash
 git tag v2.0.2
