@@ -1,0 +1,9 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><title>시간별 음향 분석</title>
+<link rel="stylesheet" href="./style.css">
+<style>body{display:block;padding:0;overflow:auto;background:#0b1622;color:#d5e6f7} .analysis-startup{margin:32px;padding:28px;border:1px solid #2d648a;border-radius:14px;font:16px system-ui;line-height:1.8} .analysis-startup progress{display:block;width:100%;margin:20px 0} .acoustics-window{position:static;width:100%;max-width:none;max-height:none;height:auto;box-sizing:border-box;margin:0;border:0;border-radius:0}.analysis-actions,#tempoBpm,#status{display:none}</style>
+</head><body data-analysis-window>
+<section class="analysis-startup" id="analysisStartup" role="status" aria-live="polite"><h1>시간별 음향 분석</h1><strong id="analysisStartupStage">분석 창을 준비하고 있습니다…</strong><progress aria-label="분석 창 준비"></progress><p id="analysisStartupDetail">결과 데이터를 연결하는 중입니다. 잠시 기다려 주세요.</p><button id="analysisRetry" type="button" onclick="location.reload()" hidden>다시 불러오기</button></section>
+<div class="analysis-actions"></div><output id="tempoBpm"></output><span id="status"></span>
+<script src="./analysis-window.js"></script><script src="./acoustics-view.js"></script>
+</body></html>

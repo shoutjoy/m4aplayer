@@ -1,0 +1,8 @@
+const {test}=require('node:test');const assert=require('node:assert/strict');const P=require('../src/image-paint.js'),C=require('../src/image-editor-core.js'),Slides=require('../src/image-slideshow.js');
+test('paint projects roundtrip editable strokes and reject missing clone sources',()=>{
+ const p=C.defaults();p.paintLayers=[{id:'one',name:'Ink',visible:true,opacity:.5,strokes:[{tool:'pen',color:'#112233',size:.05,opacity:.4,hardness:1,points:[{x:.2,y:.3,pressure:.7}]}]}];const value=P.normalize(JSON.parse(JSON.stringify(p)));assert.equal(value.paintLayers[0].strokes[0].points[0].pressure,.7);assert.equal(value.paintLayers[0].opacity,.5);assert.equal(P.normalize({}).paintSettings.tool,'select');p.paintLayers[0].strokes[0].tool='clone';assert.throws(()=>P.normalize(p),/원본/);
+});
+test('paint layer copies have independent stroke points',()=>{const layer={strokes:[{points:[{x:1,y:2}]}]},copy=P.cloneLayer(layer);copy.strokes[0].points[0].x=4;assert.equal(layer.strokes[0].points[0].x,1)});
+test('slideshow cycles through all distinct saved images using audio time, including seek and pause',()=>{
+ const track={cover_path:'b.png',cover_paths:['a.png','b.png','a.png','c.png']};assert.deepEqual(Slides.paths(track),['a.png','b.png','c.png']);assert.equal(Slides.choose(track,0,5).path,'a.png');assert.equal(Slides.choose(track,5,5).path,'b.png');assert.equal(Slides.choose(track,11,5).path,'c.png');assert.equal(Slides.choose(track,16,5).path,'a.png');assert.equal(Slides.choose(track,5,5).path,'b.png');assert.equal(Slides.choose(track,5,5).path,'b.png');assert.equal(Slides.choose(null,0,5).path,null);assert.equal(Slides.choose({cover_path:'old.png'},100,5).path,'old.png');
+});

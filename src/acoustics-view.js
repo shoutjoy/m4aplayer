@@ -1,0 +1,46 @@
+(()=>{
+'use strict';const $=id=>document.getElementById(id);let points=[],path='',page=0,progress={stage:'idle',message:'곡을 선택하면 분석합니다.'},lastReceived=Date.now();const liveWindows=new Set();const standalone=document.body.hasAttribute('data-analysis-window');
+const fields=[['time','시간 (s)'],['f1','F1 (Hz)'],['f2','F2 (Hz)'],['f3','F3 (Hz)'],['pitchMean','Pitch mean (Hz)'],['pitchMin','Pitch min (Hz)'],['pitchMax','Pitch max (Hz)'],['jitter','Jitter local (%)'],['shimmer','Shimmer local (%)'],['nhr','NHR (비율, 추정)'],['autocorrelation','Mean autocorrelation'],['db','RMS (dBFS)'],['lyric','현재 가사'],['lyricStart','시작 가사'],['lyricTime','가사 시작 (s)']];
+const button=document.createElement('button');button.type='button';button.textContent='음성 지표 · 그래프 / 데이터 창';button.disabled=true;document.querySelector('.analysis-actions').append(button);
+const dialog=document.createElement('dialog');dialog.className='acoustics-window';dialog.innerHTML='<div class="acoustics-title"><b>시간별 음향 분석</b><button type="button" data-close>닫기 ×</button></div><p>원본 오디오 · 0.5초 간격 · 주기 분석 창 120ms · RMS는 각 0.5초 구간. Jitter/Shimmer는 검출 주기의 local 변동률, NHR은 자기상관 기반 추정입니다. 반주가 포함된 음악의 음성 지표와 포먼트는 참고용 추정값입니다. 무음·미검출은 — / CSV 빈칸.</p><div class="acoustics-toolbar"><label>그래프 지표 <select></select></label><button type="button" data-save>CSV 별도 저장</button><span data-summary></span></div><canvas width="1200" height="250" aria-label="시간별 지표 변동 그래프"></canvas><output data-readout></output><div class="acoustics-table"><table><thead></thead><tbody></tbody></table></div><div class="acoustics-toolbar"><button type="button" data-prev>이전 100행</button><span data-page></span><button type="button" data-next>다음 100행</button></div><p data-status role="status"></p>';
+const progressPanel=document.createElement('section');progressPanel.className='analysis-progress';progressPanel.setAttribute('aria-live','polite');progressPanel.innerHTML='<div><strong data-stage></strong><span data-percent></span></div><progress max="100" aria-label="음향 분석 진행률"></progress><p data-detail></p><small data-elapsed></small>';
+if(standalone)dialog.prepend(progressPanel);else document.querySelector('.analysis-actions').parentElement.insertAdjacentElement('afterend',progressPanel);
+document.body.append(dialog);dialog.querySelector('[data-close]').onclick=()=>dialog.close();dialog.addEventListener('keydown',e=>e.stopPropagation());
+const select=dialog.querySelector('select');for(const [key,label] of fields.slice(1,12)){const option=document.createElement('option');option.value=key;option.textContent=label;select.append(option)}select.value='jitter';
+function rows(){const {cues=[],delay=0}=window.JJaIMsaeAnalysisLyrics?.()||{};return points.map(p=>{const active=cues.filter(c=>p.time+delay>=c.s&&p.time+delay<c.e),started=cues.filter(c=>c.s-delay>=p.time&&c.s-delay<p.time+.5);return {...p,lyric:active.map(c=>c.t).join(' / '),lyricStart:started.map(c=>c.t).join(' / '),lyricTime:started.map(c=>(c.s-delay).toFixed(3)).join(' / ')}})}
+const value=v=>v==null||typeof v==='number'&&!Number.isFinite(v)?'—':typeof v==='number'?v.toFixed(3):v;
+function table(){const data=rows(),body=dialog.querySelector('tbody');body.replaceChildren();for(const row of data.slice(page*100,(page+1)*100)){const tr=document.createElement('tr');for(const [key] of fields){const td=document.createElement('td');td.textContent=value(row[key]);tr.append(td)}body.append(tr)}dialog.querySelector('[data-page]').textContent=`${page+1} / ${Math.max(1,Math.ceil(points.length/100))} · ${points.length}행`;dialog.querySelector('[data-prev]').disabled=page===0;dialog.querySelector('[data-next]').disabled=(page+1)*100>=points.length}
+const header=document.createElement('tr');for(const [,name]of fields){const th=document.createElement('th');th.textContent=name;header.append(th)}dialog.querySelector('thead').append(header);
+function graph(){dialog.querySelector('[data-summary]').textContent='';const c=dialog.querySelector('canvas'),g=c.getContext('2d'),key=select.value,valid=points.map(p=>p[key]).filter(Number.isFinite);g.clearRect(0,0,c.width,c.height);g.fillStyle='#94acc8';g.font='14px sans-serif';if(!valid.length){g.fillText('유효한 데이터가 없습니다.',20,40);return}let lo=Math.min(...valid),hi=Math.max(...valid);if(lo===hi){lo-=1;hi+=1}g.fillText(hi.toFixed(3),4,20);g.fillText(lo.toFixed(3),4,220);g.fillText('0 s',70,245);g.fillText(points.at(-1).time.toFixed(1)+' s',1100,245);g.strokeStyle='#183549';g.strokeRect(70,10,1110,210);g.strokeStyle='#45d9ba';g.beginPath();let pen=false;for(const p of points){if(!Number.isFinite(p[key])){pen=false;continue}const x=70+p.time/Math.max(.5,points.at(-1).time)*1110,y=220-(p[key]-lo)/(hi-lo)*210;pen?g.lineTo(x,y):g.moveTo(x,y);pen=true}g.stroke();dialog.querySelector('[data-summary]').textContent=`평균: ${ (valid.reduce((a,b)=>a+b,0)/valid.length).toFixed(3) } · 유효 ${valid.length}/${points.length}`}
+select.onchange=graph;dialog.querySelector('canvas').onmousemove=e=>{if(!points.length)return;const c=e.currentTarget,r=c.getBoundingClientRect(),t=Math.max(0,Math.min(1,((e.clientX-r.left)/r.width*1200-70)/1110))*points.at(-1).time,p=points.reduce((a,b)=>Math.abs(a.time-t)<Math.abs(b.time-t)?a:b);dialog.querySelector('[data-readout]').textContent=`${p.time.toFixed(2)} s · ${select.selectedOptions[0].textContent}: ${value(p[select.value])}`};
+dialog.querySelector('[data-prev]').onclick=()=>{page--;table()};dialog.querySelector('[data-next]').onclick=()=>{page++;table()};
+function quote(v){if(v==null||typeof v==='number'&&!Number.isFinite(v))return '';let s=String(v);if(typeof v==='string'&&/^[\s]*[=+@-]/.test(s))s="'"+s;return '"'+s.replace(/"/g,'""')+'"'}
+async function save(){if(!points.length)return;const status=dialog.querySelector('[data-status]'),data=rows(),content='\uFEFF'+[fields.map(x=>quote(x[1])).join(','),...data.map(p=>fields.map(([k])=>quote(p[k])).join(','))].join('\r\n');try{const result=await window.__TAURI__.core.invoke('save_analysis_csv',{suggestedName:(path.split(/[\\/]/).pop()||'audio').replace(/\.[^.]+$/,'')+'_acoustics.csv',content});status.textContent=result?'CSV 저장 완료: '+result:'저장을 취소했습니다.';$('status').textContent=status.textContent}catch(e){status.textContent='CSV 저장 실패: '+String(e);$('status').textContent=status.textContent}}
+dialog.querySelector('[data-save]').onclick=save;
+const active=()=>!['complete','error','idle','cancelled'].includes(progress.stage);
+function renderProgress(){
+ const busy=active(),meter=progressPanel.querySelector('progress');
+ progressPanel.dataset.state=busy?'running':progress.stage;
+ progressPanel.querySelector('[data-stage]').textContent=progress.message||'분석 대기';
+ progressPanel.querySelector('[data-percent]').textContent=Number.isFinite(progress.percent)?`${Math.round(progress.percent)}%`:busy?'진행 중':'';
+ if(Number.isFinite(progress.percent))meter.value=progress.percent;else meter.removeAttribute('value');
+ meter.hidden=!busy&&progress.stage!=='complete';
+ progressPanel.querySelector('[data-detail]').textContent=progress.detail||'';
+ const elapsed=Math.floor(((progress.elapsedMs||0)+(busy?Date.now()-lastReceived:0))/1000),since=Math.floor((Date.now()-(progress.updatedAt||Date.now()))/1000);
+ progressPanel.querySelector('[data-elapsed]').textContent=progress.stage==='idle'?'':`경과 ${Math.floor(elapsed/60)}분 ${elapsed%60}초`+(busy&&since>=8?` · 최근 진행 갱신 ${since}초 전 · ${progress.message} 응답 대기`:busy?' · 계산 중':'');
+ button.disabled=progress.stage==='idle';
+ dialog.querySelector('[data-save]').disabled=!points.length||busy;
+}
+function snapshot(){return {points,path,progress,lyrics:window.JJaIMsaeAnalysisLyrics?.()||{}}}
+function publish(){if(standalone||!liveWindows.size)return;const data=JSON.stringify(snapshot());for(const key of liveWindows)try{localStorage.setItem(key,data)}catch(e){console.error('분석 창 갱신 실패',e)}}
+function setProgress(next){progress={...next,updatedAt:next.updatedAt||Date.now()};lastReceived=Date.now();if(!standalone)path=document.getElementById('infoPath')?.textContent||path;renderProgress();publish()}
+function open(){page=0;table();if(standalone)dialog.setAttribute('open','');else if(!dialog.open)dialog.showModal();graph();renderProgress()}
+button.onclick=async()=>{
+ const token=crypto.randomUUID(),storageKey='jjaimsae-analysis-'+token;
+ try{localStorage.setItem(storageKey,JSON.stringify(snapshot()));liveWindows.add(storageKey);await window.__TAURI__.core.invoke('open_acoustics_window',{token})}
+ catch(error){liveWindows.delete(storageKey);localStorage.removeItem(storageKey);open();dialog.querySelector('[data-status]').textContent='독립 창 열기 실패로 앱 내부 창에 표시합니다: '+String(error)}
+};
+window.JJaIMsaeAnalysisView={save,open,setProgress,setData(data,source){points=data;path=source;setProgress({...progress,stage:'complete',message:'분석 완료',percent:100,detail:`${points.length}개 구간 · 그래프와 표를 확인하거나 CSV로 저장하세요.`});if(dialog.open){table();graph()}},reset(){if(active())setProgress({...progress,stage:'cancelled',message:'곡 변경으로 이전 분석을 중단했습니다.'});liveWindows.clear();points=[];path='';setProgress({stage:'idle',message:'분석 대기'});dialog.close();$('tempoBpm').textContent='BPM 분석 중…'}};
+window.addEventListener?.('storage',e=>{if(e.newValue===null)liveWindows.delete(e.key)});
+renderProgress();setInterval(()=>{if(active())renderProgress()},1000);
+})();

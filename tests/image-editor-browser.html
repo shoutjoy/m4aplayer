@@ -1,0 +1,50 @@
+<!doctype html><meta charset="utf-8"><title>IMG Studio · Browser verification</title><link rel="stylesheet" href="../src/style.css"><style>body{margin:0;min-width:0;background:#070d17;color:white}#browserResult{position:fixed;z-index:100000;bottom:0;left:0;max-width:95%;padding:5px;background:#123d2e;font:12px monospace;pointer-events:none}</style><pre id="browserResult">Preparing…</pre>
+<script>
+const fixtureCanvas=document.createElement('canvas');fixtureCanvas.width=800;fixtureCanvas.height=600;const fixtureContext=fixtureCanvas.getContext('2d');const gradient=fixtureContext.createLinearGradient(0,0,800,600);gradient.addColorStop(0,'#187bce');gradient.addColorStop(1,'#f49a45');fixtureContext.fillStyle=gradient;fixtureContext.fillRect(0,0,800,600);fixtureContext.fillStyle='#ffffff';fixtureContext.fillRect(300,200,200,200);const fixtureData=fixtureCanvas.toDataURL();
+let lastExport,lastProject,lastAIRequest;const aiRecords=[];
+const testTrack={id:'browser-artwork-test',name:'Browser test · synthetic artwork',cover_path:'fixture.png'};
+window.__TAURI__={core:{convertFileSrc:path=>fixtureData,invoke:async(cmd,args)=>{
+ if(cmd==='read_binary')return Array.from(new Uint8Array(await (await fetch(fixtureData)).arrayBuffer()));
+ if(cmd==='load_cover_edit')return null;
+ if(cmd==='get_ai_settings')return {configured:true,saved:false,model:'gemini-nano-banana-2.1'};
+ if(cmd==='list_ai_images')return aiRecords;
+ if(cmd==='ai_generate_image'){lastAIRequest=args.request;const result={id:'mock-ai-'+Date.now(),path:'ai-result.png',prompt:args.request.prompt,model:'gemini-nano-banana-2.1',mode:args.request.mode,aspect_ratio:args.request.aspect_ratio,created_at:Date.now()};aiRecords.unshift(result);return [result];}
+ if(cmd==='export_cover_image'){
+  const type={png:'image/png',jpeg:'image/jpeg',jpg:'image/jpeg',webp:'image/webp',svg:'image/svg+xml',gif:'image/png'}[args.format];const blob=new Blob([new Uint8Array(args.bytes)],{type});
+  if(args.format!=='svg'){const bitmap=await createImageBitmap(blob);lastExport={format:args.format,width:bitmap.width,height:bitmap.height,type:blob.type,bytes:blob.size};bitmap.close()}
+  else{const svg=await blob.text();if(new DOMParser().parseFromString(svg,'image/svg+xml').querySelector('parsererror'))throw Error('Invalid SVG');lastExport={format:'svg',vectorText:svg.includes('<text '),bytes:blob.size}}
+  return 'test-output.'+args.format;
+ }
+ if(cmd==='save_image_project'){lastProject=structuredClone(args.project);return 'test.jjimg'}
+ if(cmd==='open_image_project')return lastProject;
+ if(cmd==='save_cover_edit')return 'fixture-edited.png';
+ if(cmd==='pick_cover_file')return 'fixture.png';
+ throw Error('Unexpected command: '+cmd);
+}}};
+</script><script src="../src/image-editor-core.js"></script><script src="../src/image-slideshow.js"></script><script src="../src/image-paint.js"></script><script src="../src/image-editor.js"></script><script src="../src/ai-image.js"></script>
+<script>
+const waitFrame=()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+async function waitIdle(){for(let n=0;n<400;n++){await new Promise(r=>setTimeout(r,25));if(!document.getElementById('imageEditor').classList.contains('ie-busy'))return}throw Error('Timed out')}
+(async()=>{await window.JJaIMsaeImageEditor.open(testTrack,path=>testTrack.cover_path=path);const button=document.createElement('button');button.textContent='Run browser verification';button.id='fixtureRun';document.querySelector('.ie-heading').append(button);button.onclick=async()=>{const results=[];const check=(condition,message)=>{if(!condition)throw Error(message);results.push(message)};const $=name=>document.getElementById('ie'+name);const input=(name,value)=>{$(name).value=value;$(name).dispatchEvent(new Event('input',{bubbles:true}))};try{
+ while(!$('DeleteText').disabled)$('DeleteText').click();$('ResetTone').click();$('AddText').click();input('Text','IMG Studio\nActual pixels');input('FontSizeRange',150);await waitFrame();check($('FontSize').value==='150','slider + number synchronized');
+ input('Ratio','9:16');input('Size',1600);await waitFrame();const canvas=$('Canvas').getBoundingClientRect(),handles=$('Handles').getBoundingClientRect();check(Math.abs(canvas.width-handles.width)<1&&Math.abs(canvas.height-handles.height)<1,'portrait overlay matches canvas');
+ for(const format of ['png','jpeg','jpg','webp','svg']){$('Format').value=format;$('Export').click();await waitIdle();check(lastExport?.format===format,format+' encoded');if(format!=='svg')check(lastExport.width===900&&lastExport.height===1600,format+' actual 900 x 1600 pixels');else check(lastExport.vectorText,'SVG retains vector text')}
+ input('Brightness',20);input('Warmth',10);$('Format').value='png';$('Export').click();await waitIdle();check(lastExport.format==='png','worker tone export completed');
+ $('SaveProject').click();await waitIdle();check(lastProject.sourceData.startsWith('data:image/png;'),'portable project embeds original');check(lastProject.layers.length===1,'portable project retains text');
+ $('SaveInternal').click();await waitIdle();check($('DBStatus').textContent.includes('저장됨'),'real IndexedDB transaction completed');
+ $('UpscaleTarget').value='1600';$('Upscale').click();await waitIdle();await waitFrame();check($('SourceSize').textContent.includes('1600 × 1200'),'upscale creates larger source raster');
+ $('Undo').click();await waitIdle();await waitFrame();check($('SourceSize').textContent.includes('800 × 600'),'undo restores original raster');
+
+ const paintCanvas=document.createElement('canvas');paintCanvas.width=paintCanvas.height=100;const pc=paintCanvas.getContext('2d');const dot={tool:'brush',color:'#ff0000',size:.2,opacity:.5,hardness:1,points:[{x:.5,y:.5,pressure:1}]};
+ ArtworkPaint.stroke(pc,dot,100,100,()=>null);let pixel=pc.getImageData(50,50,1,1).data;check(pixel[0]===255&&pixel[3]>=127&&pixel[3]<=128,'brush actual color + alpha pixels');
+ ArtworkPaint.stroke(pc,{...dot,tool:'eraser'},100,100,()=>null);pixel=pc.getImageData(50,50,1,1).data;check(pixel[3]>=63&&pixel[3]<=65,'eraser density removes partial alpha');
+ pc.clearRect(0,0,100,100);ArtworkPaint.stroke(pc,{...dot,tool:'highlighter',opacity:.35},100,100,()=>null);pixel=pc.getImageData(50,50,1,1).data;check(pixel[3]>80&&pixel[3]<100&&pc.getImageData(50,57,1,1).data[3]===0,'highlighter alpha and flat nib');
+ const source=document.createElement('canvas');source.width=source.height=100;const sc=source.getContext('2d');sc.fillStyle='#ff0000';sc.fillRect(0,0,50,100);sc.fillStyle='#0000ff';sc.fillRect(50,0,50,100);pc.clearRect(0,0,100,100);
+ ArtworkPaint.stroke(pc,{...dot,tool:'clone',hardness:.5,opacity:1,sourceId:'one',offsetX:.5,offsetY:0,points:[{x:.75,y:.5,pressure:1}]},100,100,()=>source);pixel=pc.getImageData(75,50,1,1).data;check(pixel[0]>250&&pixel[2]<5,'clone stamp copies actual source pixels');check(pc.getImageData(84,50,1,1).data[3]<pixel[3],'clone stamp softness fades edges');
+ pc.fillStyle='#0000ff';pc.fillRect(0,0,100,100);const overlay={paintLayers:[{visible:true,opacity:1,strokes:[{...dot,size:.5,opacity:1},{...dot,tool:'eraser',size:.1,opacity:1}]}]};ArtworkPaint.render(pc,overlay,100,100,()=>document.createElement('canvas'),()=>null);pixel=pc.getImageData(50,50,1,1).data;check(pixel[2]===255&&pixel[0]===0,'layer eraser leaves lower image intact');
+ $('SaveProject').click();await waitIdle();check(Array.isArray(lastProject.paintLayers),'paint layers included in portable project');
+
+ $('AI').click();await waitFrame();const ai=id=>document.getElementById('ai'+id);check(document.getElementById('aiImageDialog').open,'AI prompt modal opens above editor');ai('Prompt').value='Browser-only mock: make a blue album cover';ai('Mode').value='edit';ai('Run').click();for(let n=0;n<200;n++){await new Promise(r=>setTimeout(r,25));if(ai('Status').textContent.includes('생성 완료'))break}check(lastAIRequest?.image_data?.startsWith('data:image/jpeg;base64,'),'AI edit captures real JPEG canvas');check(aiRecords.length===1&&ai('Apply').disabled===false,'AI result gallery keeps separate generated record');ai('Apply').click();await waitIdle();for(let n=0;n<200&&document.getElementById('aiImageDialog').open;n++)await new Promise(r=>setTimeout(r,25));check(!document.getElementById('aiImageDialog').open,'AI selected result applies to editor');check($('TextControls').hidden,'AI flattened result avoids duplicated old text');$('Undo').click();await waitIdle();check(!$('TextControls').hidden,'AI apply undo restores editable text');
+ document.getElementById('browserResult').textContent='PASS '+results.length+' browser checks\n'+results.join(' · ');
+ }catch(error){document.getElementById('browserResult').textContent='FAIL: '+error.stack}};document.getElementById('browserResult').textContent='Ready — use Run browser verification';})();
+</script>

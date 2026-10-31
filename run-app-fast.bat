@@ -2,7 +2,7 @@
 setlocal
 cd /d "%~dp0"
 
-set "APP_EXE=src-tauri\target\release\jjaimsae-player-no-console.exe"
+set "APP_EXE=src-tauri\target\release\jjaimsae-player.exe"
 
 if not exist "%APP_EXE%" (
   echo [ERROR] Compiled app was not found.

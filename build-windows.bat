@@ -12,6 +12,6 @@ cargo tauri build
 if errorlevel 1 (echo [ERROR] Build failed. & pause & exit /b 1)
 echo.
 echo [OK] Build complete.
-echo EXE: src-tauri\target\release\local-audio-player.exe
+echo EXE: src-tauri\target\release\jjaimsae-player.exe
 echo Bundle: src-tauri\target\release\bundle\
 pause
