@@ -4,7 +4,7 @@ const fs=require('node:fs');
 const vm=require('node:vm');
 function player(responses={}){
  const calls=[],elements=new Map();
- const el=id=>{if(!elements.has(id))elements.set(id,{textContent:'',value:'',classList:{toggle(){}},addEventListener(){}});return elements.get(id)};
+ const el=id=>{if(!elements.has(id))elements.set(id,{textContent:'',value:'',classList:{toggle(){},contains(){return false}},addEventListener(){}});return elements.get(id)};
  const context={document:{getElementById:el,addEventListener(){}},window:{JJaIMsaePlayerBar:{bind(){},render(){}},JJaIMsaePlayerEQ:{bind(){},connect(a,s){return s}},__TAURI__:{core:{invoke:async(cmd,args)=>{calls.push([cmd,args]);if(cmd in responses)return responses[cmd];return cmd==='get_open_mode'?'existing':cmd==='load_playlist'?[]:cmd==='startup_media_files'?[]:''},convertFileSrc:x=>x}}},URLSearchParams,location:{search:''},setTimeout(){},crypto:require('node:crypto').webcrypto};
  const source=fs.readFileSync('src/app.js','utf8');
  vm.runInNewContext(source.slice(0,source.indexOf('document.addEventListener("keydown"'))+'globalThis.player=A;})();',context);
@@ -93,6 +93,7 @@ test('MP4 and WebM render through the same media element as audio playback',asyn
  context.window.JJaIMsaePlayerEQ.load=()=>{};
  for(const method of ['resetAB','loadSlideSettings','refreshSlides','updateMediaInfo','loadSrt'])a[method]=()=>{};
  context.window.dispatchEvent=()=>{};context.Event=class{};
+ const tabs=[];context.document.querySelector=selector=>({click(){tabs.push(selector)}});
  for(const id of ['name','info','infoName','infoFormat','infoPath','coverImage'])a[id]={};
  const visible=[];let plays=0;
  a.a={pause(){},load(){},classList:{toggle(name,on){visible.push(on)}}};a.go=()=>plays++;
@@ -101,6 +102,7 @@ test('MP4 and WebM render through the same media element as audio playback',asyn
  assert.deepEqual(visible,[true,true,false]);assert.equal(plays,3);
  const html=fs.readFileSync('src/index.html','utf8');
  assert.equal((html.match(/id="audio"/g)||[]).length,1);
- assert.match(html,/<video id="audio" class="video-preview"/);
+ assert.match(html,/<video id="audio" class="video-player" controls/);
+ assert.deepEqual(tabs,['[data-tab="videoPlayback"]','[data-tab="videoPlayback"]']);
  assert.ok(!html.includes('id="videoPreview"'));
 });

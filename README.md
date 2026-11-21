@@ -2,14 +2,14 @@
 
 ## Windows 앱 다운로드
 
-### [⬇ Windows 설치 파일 바로 다운로드 (v2.0.3 · 64비트)](https://github.com/shoutjoy/m4aplayer/releases/download/v2.0.3/JJaIMsae.Player_2.0.3_x64-setup.exe)
+### [⬇ Windows 설치 파일 바로 다운로드 (v2.0.4 · 64비트)](https://github.com/shoutjoy/m4aplayer/releases/download/v2.0.4/JJaIMsae.Player_2.0.4_x64-setup.exe)
 
 위 링크를 누르면 설치 파일을 바로 다운로드합니다. 다운로드한 `.exe`를 실행하세요. FFmpeg와 FFprobe가 포함되어 별도로 설치할 필요가 없습니다.
 
 - [최신 릴리스 및 설치 파일 목록](https://github.com/shoutjoy/m4aplayer/releases/latest)
 - [자동 빌드 실행 및 다운로드](https://github.com/shoutjoy/m4aplayer/actions/workflows/release.yml): `Run workflow` 실행 후 성공한 실행의 `Artifacts`에서 설치 파일 ZIP을 받습니다(GitHub 로그인 필요, 30일 보관).
 
-현재 공개 버전은 **v2.0.3**입니다. MP4·WebM 영상과 소리를 하나의 재생기로 재생하며, 재생·일시정지·탐색·속도 조절이 함께 적용됩니다. 영상은 `시각화 + 가사` 탭에서 표시됩니다. 이미지 편집·AI 이미지 생성/편집, 곡별 이미지/영상 슬라이드, 이미지 포함 프로젝트, SRT 편집, EQ·피크·라우드니스·음향 분석 등 아래에 설명한 최신 기능을 포함합니다.
+현재 공개 버전은 **v2.0.4**입니다. MP4·WebM 영상과 소리를 하나의 재생기로 재생하며, 재생·일시정지·탐색·속도 조절이 함께 적용됩니다. MP4·WebM을 선택하면 전용 `동영상` 탭이 자동으로 열리고 영상이 표시됩니다. 화면의 기본 동영상 컨트롤과 하단 플레이어 컨트롤로 재생할 수 있습니다. 이미지 편집·AI 이미지 생성/편집, 곡별 이미지/영상 슬라이드, 이미지 포함 프로젝트, SRT 편집, EQ·피크·라우드니스·음향 분석 등 아래에 설명한 최신 기능을 포함합니다.
 
 Cargo + Tauri 2 기반 로컬 미디어 플레이어/가사/시각화/마스터링 통합 앱.
 m4a를 재생하는 도구가 window나 mac에서 실제로 비용을 내야하는 도구가 많아서 직접 만든 것이다. 오프라인에서 동작하도록 설계하였다. 
@@ -146,11 +146,11 @@ Tauri bundle resources 설정에 의해 두 실행파일이 설치 패키지에 
 
 저장소의 `Actions` 탭에서 `Build and Release Windows App` 워크플로우를 수동 실행하면 Windows NSIS 설치 프로그램이 빌드된다. 완료 후 해당 실행 화면의 `Artifacts`에서 `JJaIMsae-Player-Windows-NSIS`를 다운로드할 수 있으며, 이 임시 파일은 30일 동안 보관된다.
 
-정식 배포는 `src-tauri/tauri.conf.json`의 버전과 같은 Git 태그를 사용한다. `v2.0.1`은 이미 배포된 태그이므로 다시 만들지 않는다. 다음 v2.0.3를 배포할 때는 먼저 버전 설정과 최신 소스를 커밋·푸시한 뒤 아래 두 명령을 각각 실행한다.
+정식 배포는 `src-tauri/tauri.conf.json`의 버전과 같은 Git 태그를 사용한다. `v2.0.1`은 이미 배포된 태그이므로 다시 만들지 않는다. 다음 v2.0.4를 배포할 때는 먼저 버전 설정과 최신 소스를 커밋·푸시한 뒤 아래 두 명령을 각각 실행한다.
 
 ```bash
-git tag v2.0.3
-git push origin v2.0.3
+git tag v2.0.4
+git push origin v2.0.4
 ```
 
 태그가 푸시되면 GitHub Release가 자동으로 생성되고 NSIS 설치 파일이 Release 자산으로 업로드된다. FFmpeg와 FFprobe는 저장소에 포함하지 않으며, 워크플로우가 빌드할 때 Gyan.dev의 Windows essentials 배포본을 내려받아 설치 프로그램에 포함한다.
