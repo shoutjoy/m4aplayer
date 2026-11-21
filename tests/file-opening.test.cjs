@@ -86,3 +86,21 @@ test('sending a track to mastering pauses before preparing the track and release
  a.i=0;a.tracks=[{}];let paused=0;a.a={pause(){paused++}};
  await a.master();assert.equal(paused,1);assert.equal(a.masteringActive,false);
 });
+
+
+test('MP4 and WebM render through the same media element as audio playback',async()=>{
+ const {a,context}=player();
+ context.window.JJaIMsaePlayerEQ.load=()=>{};
+ for(const method of ['resetAB','loadSlideSettings','refreshSlides','updateMediaInfo','loadSrt'])a[method]=()=>{};
+ context.window.dispatchEvent=()=>{};context.Event=class{};
+ for(const id of ['name','info','infoName','infoFormat','infoPath','coverImage'])a[id]={};
+ const visible=[];let plays=0;
+ a.a={pause(){},load(){},classList:{toggle(name,on){visible.push(on)}}};a.go=()=>plays++;
+ a.tracks=[{path:'movie.MP4',format:'MP4'},{path:'clip.webm',format:'WEBM'},{path:'song.wav',format:'WAV'}];
+ for(let i=0;i<a.tracks.length;i++){await a.load(i,true);assert.equal(a.a.src,a.tracks[i].path)}
+ assert.deepEqual(visible,[true,true,false]);assert.equal(plays,3);
+ const html=fs.readFileSync('src/index.html','utf8');
+ assert.equal((html.match(/id="audio"/g)||[]).length,1);
+ assert.match(html,/<video id="audio" class="video-preview"/);
+ assert.ok(!html.includes('id="videoPreview"'));
+});
